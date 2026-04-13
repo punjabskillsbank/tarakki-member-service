@@ -1,0 +1,1 @@
+# tarakki-member-service
