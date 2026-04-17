@@ -35,6 +35,6 @@ public class MemberDTO {
     private String profilePhotoS3Key;
 
     @NotNull
-    private AccountStatus accountStatus;
+    private AccountStatus accountStatus = AccountStatus.INVITED;
 
 }

@@ -4,6 +4,7 @@ package com.tarakki.member.controller;
 import com.tarakki.common.enums.AccountStatus;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.service.MemberService;
+import com.tarakki.member.util.TestDataFactory;
 import  org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.junit.jupiter.api.Test;
@@ -38,17 +39,8 @@ class MemberControllerTest {
     @BeforeEach
     void setUp() {
 
-        input = new MemberDTO();
-        input.setFirstName("Sahib");
-        input.setLastName("Singh");
-        input.setEmail("sahib@gmail.com");
-        input.setAccountStatus(AccountStatus.ACTIVE);
-
-        output = new MemberDTO();
-        output.setFirstName("Sahib");
-        output.setLastName("Singh");
-        output.setEmail("sahib@gmail.com");
-        output.setAccountStatus(AccountStatus.ACTIVE);
+        input = TestDataFactory.createMemberDTO();
+        output = TestDataFactory.createMemberDTO();
     }
 
     @Test
@@ -61,7 +53,7 @@ class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.email").value("sahib@gmail.com"))
-                .andExpect(jsonPath("$.firstName").value("Sahib"));
+                .andExpect(jsonPath("$.email").value(input.getEmail()))
+                .andExpect(jsonPath("$.firstName").value(input.getFirstName()));
     }
     }
