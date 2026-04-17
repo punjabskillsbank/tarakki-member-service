@@ -1,0 +1,67 @@
+package com.tarakki.member.controller;
+
+
+import com.tarakki.common.enums.AccountStatus;
+import com.tarakki.member.dto.MemberDTO;
+import com.tarakki.member.service.MemberService;
+import  org.junit.jupiter.api.BeforeEach;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
+
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(MemberController.class)
+class MemberControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private MemberService memberService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private MemberDTO input;
+    private MemberDTO output;
+
+    @BeforeEach
+    void setUp() {
+
+        input = new MemberDTO();
+        input.setFirstName("Sahib");
+        input.setLastName("Singh");
+        input.setEmail("sahib@gmail.com");
+        input.setAccountStatus(AccountStatus.ACTIVE);
+
+        output = new MemberDTO();
+        output.setFirstName("Sahib");
+        output.setLastName("Singh");
+        output.setEmail("sahib@gmail.com");
+        output.setAccountStatus(AccountStatus.ACTIVE);
+    }
+
+    @Test
+    void shouldCreateMember() throws Exception {
+
+        when(memberService.createMember(any()))
+                .thenReturn(output);
+
+        mockMvc.perform(post("/api/members/save")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.email").value("sahib@gmail.com"))
+                .andExpect(jsonPath("$.firstName").value("Sahib"));
+    }
+    }
