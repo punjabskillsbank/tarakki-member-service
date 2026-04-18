@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.xml.crypto.dsig.spec.XSLTTransformParameterSpec;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -18,6 +19,8 @@ import java.util.UUID;
 @Setter
 
 public class MemberDTO {
+
+    private UUID memberId;
 
     @NotBlank
     @Size(max = 100)
