@@ -22,7 +22,7 @@ public class MemberController {
     @PostMapping("/save")
     public ResponseEntity<MemberDTO> createMember(@Valid @RequestBody MemberDTO memberDTO) {
         MemberDTO result = memberService.createMember(memberDTO);
-        return new ResponseEntity<>(memberDTO , HttpStatus.CREATED);
+        return new ResponseEntity<>(result , HttpStatus.CREATED);
 
     }
 }

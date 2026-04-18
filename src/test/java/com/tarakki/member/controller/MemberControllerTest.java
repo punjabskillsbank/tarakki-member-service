@@ -1,10 +1,9 @@
 package com.tarakki.member.controller;
 
 
-import com.tarakki.common.enums.AccountStatus;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.service.MemberService;
-import com.tarakki.member.util.TestDataFactory;
+import com.tarakki.member.util.MemberTestDataFactory;
 import  org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.junit.jupiter.api.Test;
@@ -39,8 +38,8 @@ class MemberControllerTest {
     @BeforeEach
     void setUp() {
 
-        input = TestDataFactory.createMemberDTO();
-        output = TestDataFactory.createMemberDTO();
+        input = MemberTestDataFactory.createMemberDTO();
+        output = MemberTestDataFactory.createMemberDTO();
     }
 
     @Test

@@ -6,7 +6,7 @@ import com.tarakki.member.dto.MemberDTO;
 
 import java.util.UUID;
 
-public class TestDataFactory {
+public class MemberTestDataFactory {
     public static MemberDTO createMemberDTO() {
         MemberDTO dto = new MemberDTO();
         dto.setFirstName("Sahib");

@@ -4,7 +4,7 @@ import com.tarakki.common.entity.Member;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.serviceImpl.MemberServiceImpl;
-import com.tarakki.member.util.TestDataFactory;
+import com.tarakki.member.util.MemberTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,8 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -35,8 +33,8 @@ class MemberServiceTest {
 
     @BeforeEach
     void setUp() {
-        dto = TestDataFactory.createMemberDTO();
-        member = TestDataFactory.createMemberEntity();
+        dto = MemberTestDataFactory.createMemberDTO();
+        member = MemberTestDataFactory.createMemberEntity();
     }
 
     @Test
