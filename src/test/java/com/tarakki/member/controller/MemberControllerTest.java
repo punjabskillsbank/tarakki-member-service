@@ -48,7 +48,7 @@ class MemberControllerTest {
         when(memberService.createMember(any()))
                 .thenReturn(output);
 
-        mockMvc.perform(post("/api/members/save")
+        mockMvc.perform(post("/api/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(input)))
                 .andExpect(status().isCreated())

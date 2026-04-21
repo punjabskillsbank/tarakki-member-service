@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,6 +19,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @PostMapping
     public ResponseEntity<MemberDTO> createMember(@Valid @RequestBody MemberDTO memberDTO) {
         MemberDTO result = memberService.createMember(memberDTO);
         return new ResponseEntity<>(result , HttpStatus.CREATED);
