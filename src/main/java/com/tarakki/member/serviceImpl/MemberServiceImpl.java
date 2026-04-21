@@ -1,16 +1,12 @@
 package com.tarakki.member.serviceImpl;
 
 import com.tarakki.common.entity.Member;
-import com.tarakki.member.config.ModelMapperConfig;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.service.MemberService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
