@@ -13,6 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
@@ -60,5 +63,26 @@ class MemberServiceTest {
         verify(modelMapper).map(any(MemberDTO.class), eq(Member.class));
         verify(memberRepository).save(any(Member.class));
         verify(modelMapper).map(any(Member.class), eq(MemberDTO.class));
+    }
+
+    @Test
+    void shouldGetMemberById() {
+
+        UUID memberId = MemberTestDataFactory.createRandomUUID();
+
+        MemberDTO myDto = MemberTestDataFactory.createGetMemberDTO();
+        myDto.setMemberId(memberId);
+
+        Member myMember = MemberTestDataFactory.createMemberEntity();
+        myMember.setMemberId(memberId);
+
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(myMember));
+        when(modelMapper.map(any(Member.class), eq(MemberDTO.class))).thenReturn(myDto);
+
+        MemberDTO result = memberService.getMemberById(memberId);
+
+
+        assertNotNull(result);
+        assertEquals("Amanpreet", result.getFirstName());
     }
 }

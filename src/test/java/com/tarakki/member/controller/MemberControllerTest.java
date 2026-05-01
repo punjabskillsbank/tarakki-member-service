@@ -55,4 +55,18 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.email").value(input.getEmail()))
                 .andExpect(jsonPath("$.firstName").value(input.getFirstName()));
     }
+    @Test
+    void shouldGetMemberById() throws Exception {
+
+        java.util.UUID memberId = java.util.UUID.fromString("5d23a553-b38c-40d7-8d3b-332cfd02d9a2");
+        output.setMemberId(memberId);
+
+        when(memberService.getMemberById(memberId)).thenReturn(output);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/members/" + memberId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.memberId").value(memberId.toString()))
+                .andExpect(jsonPath("$.email").value(output.getEmail()));
+    }
     }
