@@ -7,6 +7,7 @@ import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,11 +19,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDTO createMember(MemberDTO memberDTO){
-        if (memberRepository.existsByEmail(memberDTO.getEmail())) {
+        try {
+            Member member = modelMapper.map(memberDTO, Member.class);
+            Member savedMember = memberRepository.save(member);
+            return modelMapper.map(savedMember, MemberDTO.class);
+        } catch (DataIntegrityViolationException e) {
             throw new MemberEmailAlreadyExistsException(memberDTO.getEmail());
         }
-        Member member = modelMapper.map(memberDTO, Member.class);
-        Member savedMember = memberRepository.save(member);
-        return modelMapper.map(savedMember, MemberDTO.class);
     }
 }

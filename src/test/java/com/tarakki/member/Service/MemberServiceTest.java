@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -40,8 +41,6 @@ class MemberServiceTest {
 
     @Test
     void shouldCreateMember() {
-        when(memberRepository.existsByEmail(anyString())).thenReturn(false);
-
         when(modelMapper.map(any(MemberDTO.class), eq(Member.class)))
                 .thenReturn(member);
 
@@ -59,7 +58,6 @@ class MemberServiceTest {
         assertEquals(dto.getEmail(), result.getEmail());
         assertEquals(dto.getAccountStatus(), result.getAccountStatus());
 
-        verify(memberRepository).existsByEmail(anyString());
         verify(modelMapper).map(any(MemberDTO.class), eq(Member.class));
         verify(memberRepository).save(any(Member.class));
         verify(modelMapper).map(any(Member.class), eq(MemberDTO.class));
@@ -67,11 +65,13 @@ class MemberServiceTest {
 
     @Test
     void shouldThrowExceptionWhenEmailAlreadyExists() {
-        when(memberRepository.existsByEmail(anyString())).thenReturn(true);
+        when(modelMapper.map(any(MemberDTO.class), eq(Member.class)))
+                .thenReturn(member);
+        when(memberRepository.save(any(Member.class)))
+                .thenThrow(new DataIntegrityViolationException("Duplicate email"));
 
         assertThrows(MemberEmailAlreadyExistsException.class, () -> memberService.createMember(dto));
 
-        verify(memberRepository).existsByEmail(anyString());
-        verify(memberRepository, never()).save(any(Member.class));
+        verify(memberRepository).save(any(Member.class));
     }
 }
