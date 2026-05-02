@@ -1,5 +1,6 @@
 package com.tarakki.member.exception;
 
+import com.tarakki.member.util.MemberTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,16 +25,18 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void shouldHandleMemberAlreadyExistsException() throws Exception {
+        String testEmail = MemberTestDataFactory.createMemberDTO().getEmail();
         mockMvc.perform(get("/test/already-exists"))
                 .andExpect(status().isConflict())
-                .andExpect(content().string("Member with email test@example.com already exists."));
+                .andExpect(content().string("Member with email " + testEmail + " already exists."));
     }
 
     @RestController
     static class TestController {
         @GetMapping("/test/already-exists")
         public void throwAlreadyExists() {
-            throw new MemberEmailAlreadyExistsException("test@example.com");
+            String testEmail = MemberTestDataFactory.createMemberDTO().getEmail();
+            throw new MemberEmailAlreadyExistsException(testEmail);
         }
     }
 }
