@@ -6,4 +6,6 @@ public interface MemberService {
 
     MemberDTO createMember(MemberDTO memberDTO);
 
+    boolean existsByEmail(String email);
+
 }
