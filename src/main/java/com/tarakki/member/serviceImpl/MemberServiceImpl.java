@@ -1,6 +1,7 @@
 package com.tarakki.member.serviceImpl;
 
 import com.tarakki.common.entity.Member;
+import com.tarakki.common.exceptionHandling.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import java.util.UUID;
 import com.tarakki.member.repository.MemberRepository;
@@ -24,10 +25,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberDTO getMemberById(UUID member_id) {
-        Member entity = memberRepository.findById(member_id)
-                .orElseThrow(() -> new RuntimeException("Member not found with ID: " + member_id));
-
+    public MemberDTO getMemberById(UUID memberId) {
+        Member entity = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
         return modelMapper.map(entity, MemberDTO.class);
     }
 }

@@ -1,6 +1,7 @@
 package com.tarakki.member.controller;
 
 
+import com.tarakki.common.exceptionHandling.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.service.MemberService;
 import com.tarakki.member.util.MemberTestDataFactory;
@@ -9,11 +10,15 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static jdk.internal.org.objectweb.asm.util.CheckClassAdapter.verify;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
-
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -58,15 +63,27 @@ class MemberControllerTest {
     @Test
     void shouldGetMemberById() throws Exception {
 
-        java.util.UUID memberId = java.util.UUID.fromString("5d23a553-b38c-40d7-8d3b-332cfd02d9a2");
+        UUID memberId = MemberTestDataFactory.createRandomUUID();
         output.setMemberId(memberId);
 
         when(memberService.getMemberById(memberId)).thenReturn(output);
 
-        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/members/" + memberId)
+        mockMvc.perform(get("/api/members/" + memberId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(memberId.toString()))
                 .andExpect(jsonPath("$.email").value(output.getEmail()));
     }
+    @Test
+    void shouldReturn404WhenMemberNotFound() throws Exception {
+
+        UUID memberId = MemberTestDataFactory.createRandomUUID();
+
+        when(memberService.getMemberById(memberId))
+                .thenThrow(new MemberNotFoundException(memberId));
+
+        mockMvc.perform(get("/api/members/" + memberId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
+}

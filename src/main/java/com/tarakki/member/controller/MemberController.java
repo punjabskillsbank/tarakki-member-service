@@ -8,8 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-        import java.util.UUID;
+import java.util.UUID;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
@@ -27,8 +26,8 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MemberDTO> getMemberById(@PathVariable UUID id) {
-        MemberDTO memberDTO = memberService.getMemberById(id);
+    public ResponseEntity<MemberDTO> getMemberById(@PathVariable("id") UUID memberId) {
+        MemberDTO memberDTO = memberService.getMemberById(memberId);
         return ResponseEntity.ok(memberDTO);
     }
 }
