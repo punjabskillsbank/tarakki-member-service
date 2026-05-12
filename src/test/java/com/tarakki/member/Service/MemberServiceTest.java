@@ -1,6 +1,7 @@
 package com.tarakki.member.Service;
 
 import com.tarakki.common.entity.Member;
+import com.tarakki.common.exceptionHandling.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.serviceImpl.MemberServiceImpl;
@@ -84,5 +85,16 @@ class MemberServiceTest {
 
         assertNotNull(result);
         assertEquals("Amanpreet", result.getFirstName());
+    }
+    @Test
+    void getMemberById_WhenNotFound_ThrowsException() {
+
+        UUID memberId = UUID.randomUUID();
+
+        when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
+
+        assertThrows(MemberNotFoundException.class, () -> {
+            memberService.getMemberById(memberId);
+        });
     }
 }
