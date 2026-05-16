@@ -50,8 +50,7 @@ class MemberControllerTest {
 
         mockMvc.perform(get("/api/members/" + memberId)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value("NOT_FOUND"));
+                .andExpect(status().isNotFound());
     }
 
     @Test

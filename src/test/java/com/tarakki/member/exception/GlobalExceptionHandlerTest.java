@@ -9,8 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 class GlobalExceptionHandlerTest {
 
@@ -22,19 +21,21 @@ class GlobalExceptionHandlerTest {
                 .setControllerAdvice(new com.tarakki.member.exception.GlobalExceptionHandler())
                 .build();
     }
-
     @Test
     void shouldHandleMemberAlreadyExistsException() throws Exception {
+        String testEmail = MemberTestDataFactory.createMemberDTO().getEmail();
         mockMvc.perform(get("/test/already-exists"))
                 .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.status").value("CONFLICT"));
+                .andExpect(content().string("Member with email " + testEmail + " already exists."));
     }
 
     @RestController
     static class TestController {
         @GetMapping("/test/already-exists")
         public void throwAlreadyExists() {
-            throw new MemberEmailAlreadyExistsException("sahib@gmail.com");
+            String testEmail = MemberTestDataFactory.createMemberDTO().getEmail();
+            throw new MemberEmailAlreadyExistsException(testEmail);
+            
         }
     }
 }

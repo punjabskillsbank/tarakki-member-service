@@ -3,6 +3,7 @@ package com.tarakki.member.Service;
 import com.tarakki.common.entity.Member;
 import com.tarakki.common.exceptionHandling.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
+import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.serviceImpl.MemberServiceImpl;
 import com.tarakki.member.util.MemberTestDataFactory;
@@ -43,15 +44,11 @@ class MemberServiceTest {
 
     @Test
     void shouldCreateMember() {
+        when(memberRepository.existsByEmail(anyString())).thenReturn(false);
 
-        when(modelMapper.map(any(MemberDTO.class), eq(Member.class)))
-                .thenReturn(member);
-
-        when(memberRepository.save(any(Member.class)))
-                .thenReturn(member);
-
-        when(modelMapper.map(any(Member.class), eq(MemberDTO.class)))
-                .thenReturn(dto);
+        when(modelMapper.map(any(MemberDTO.class), eq(Member.class))).thenReturn(member);
+        when(memberRepository.save(any(Member.class))).thenReturn(member);
+        when(modelMapper.map(any(Member.class), eq(MemberDTO.class))).thenReturn(dto);
 
         MemberDTO result = memberService.createMember(dto);
 
@@ -61,19 +58,29 @@ class MemberServiceTest {
         assertEquals(dto.getEmail(), result.getEmail());
         assertEquals(dto.getAccountStatus(), result.getAccountStatus());
 
+        verify(memberRepository).existsByEmail(anyString());
         verify(modelMapper).map(any(MemberDTO.class), eq(Member.class));
         verify(memberRepository).save(any(Member.class));
         verify(modelMapper).map(any(Member.class), eq(MemberDTO.class));
     }
 
     @Test
+    void createMember_WhenEmailAlreadyExists_ThrowsException() {
+
+        when(memberRepository.existsByEmail(anyString())).thenReturn(true);
+
+        assertThrows(MemberEmailAlreadyExistsException.class, () -> {
+            memberService.createMember(dto);
+        });
+
+        verify(memberRepository, never()).save(any(Member.class));
+    }
+
+    @Test
     void shouldGetMemberById() {
-
         UUID memberId = MemberTestDataFactory.createRandomUUID();
-
         MemberDTO myDto = MemberTestDataFactory.createGetMemberDTO();
         myDto.setMemberId(memberId);
-
         Member myMember = MemberTestDataFactory.createMemberEntity();
         myMember.setMemberId(memberId);
 
@@ -82,15 +89,13 @@ class MemberServiceTest {
 
         MemberDTO result = memberService.getMemberById(memberId);
 
-
         assertNotNull(result);
-        assertEquals("Amanpreet", result.getFirstName());
+        assertEquals(myDto.getFirstName(), result.getFirstName());
     }
+
     @Test
     void getMemberById_WhenNotFound_ThrowsException() {
-
         UUID memberId = UUID.randomUUID();
-
         when(memberRepository.findById(memberId)).thenReturn(Optional.empty());
 
         assertThrows(MemberNotFoundException.class, () -> {
