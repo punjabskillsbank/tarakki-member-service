@@ -24,13 +24,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity<String> handleMemberNotFound(MemberNotFoundException ex) {
-
+    public ResponseEntity<String> handleMemberNotFoundException(MemberNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
     @ExceptionHandler(MemberEmailAlreadyExistsException.class)
-    public ResponseEntity<String> handleMemberAlreadyExists(MemberEmailAlreadyExistsException ex) {
+    public ResponseEntity<String> handleMemberEmailAlreadyExists(MemberEmailAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

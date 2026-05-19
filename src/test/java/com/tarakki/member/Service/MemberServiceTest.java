@@ -66,13 +66,10 @@ class MemberServiceTest {
 
     @Test
     void createMember_WhenEmailAlreadyExists_ThrowsException() {
-
         when(memberRepository.existsByEmail(anyString())).thenReturn(true);
-
         assertThrows(MemberEmailAlreadyExistsException.class, () -> {
             memberService.createMember(dto);
         });
-
         verify(memberRepository, never()).save(any(Member.class));
     }
 
