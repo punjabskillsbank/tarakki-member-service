@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MemberEmailAlreadyExistsException.class)
-    public ResponseEntity<String> handleMemberEmailAlreadyExists(MemberEmailAlreadyExistsException ex) {
+    public ResponseEntity<String> handleMemberEmailAlreadyExistsException(MemberEmailAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 }

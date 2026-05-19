@@ -14,6 +14,7 @@ import org.modelmapper.ModelMapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -44,11 +45,15 @@ class MemberServiceTest {
 
     @Test
     void shouldCreateMember() {
-        when(memberRepository.existsByEmail(anyString())).thenReturn(false);
 
-        when(modelMapper.map(any(MemberDTO.class), eq(Member.class))).thenReturn(member);
-        when(memberRepository.save(any(Member.class))).thenReturn(member);
-        when(modelMapper.map(any(Member.class), eq(MemberDTO.class))).thenReturn(dto);
+        when(modelMapper.map(any(MemberDTO.class), eq(Member.class)))
+                .thenReturn(member);
+
+        when(memberRepository.save(any(Member.class)))
+                .thenReturn(member);
+
+        when(modelMapper.map(any(Member.class), eq(MemberDTO.class)))
+                .thenReturn(dto);
 
         MemberDTO result = memberService.createMember(dto);
 
@@ -58,19 +63,40 @@ class MemberServiceTest {
         assertEquals(dto.getEmail(), result.getEmail());
         assertEquals(dto.getAccountStatus(), result.getAccountStatus());
 
-        verify(memberRepository).existsByEmail(anyString());
         verify(modelMapper).map(any(MemberDTO.class), eq(Member.class));
         verify(memberRepository).save(any(Member.class));
         verify(modelMapper).map(any(Member.class), eq(MemberDTO.class));
     }
 
     @Test
-    void createMember_WhenEmailAlreadyExists_ThrowsException() {
-        when(memberRepository.existsByEmail(anyString())).thenReturn(true);
-        assertThrows(MemberEmailAlreadyExistsException.class, () -> {
-            memberService.createMember(dto);
-        });
-        verify(memberRepository, never()).save(any(Member.class));
+    void shouldThrowExceptionWhenEmailAlreadyExists() {
+        when(modelMapper.map(any(MemberDTO.class), eq(Member.class)))
+                .thenReturn(member);
+        when(memberRepository.save(any(Member.class)))
+                .thenThrow(new DuplicateKeyException("Duplicate key"));
+        when(memberRepository.existsByEmail(anyString()))
+                .thenReturn(true);
+
+        assertThrows(MemberEmailAlreadyExistsException.class, () -> memberService.createMember(dto));
+
+        verify(memberRepository).save(any(Member.class));
+        verify(memberRepository).existsByEmail(anyString());
+    }
+    @Test
+    void shouldReturnNullWhenNotEmailDuplicate() {
+        when(modelMapper.map(any(MemberDTO.class), eq(Member.class)))
+                .thenReturn(member);
+        when(memberRepository.save(any(Member.class)))
+                .thenThrow(new DuplicateKeyException("Other duplicate key"));
+        when(memberRepository.existsByEmail(anyString()))
+                .thenReturn(false);
+
+        MemberDTO result = memberService.createMember(dto);
+
+        assertNull(result);
+
+        verify(memberRepository).save(any(Member.class));
+        verify(memberRepository).existsByEmail(anyString());
     }
 
     @Test

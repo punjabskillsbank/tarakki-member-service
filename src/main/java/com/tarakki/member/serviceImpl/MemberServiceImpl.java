@@ -9,6 +9,7 @@ import com.tarakki.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.dao.DuplicateKeyException;
 
 import java.util.UUID;
 
@@ -21,14 +22,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDTO createMember(MemberDTO memberDTO) {
-        if (existsByEmail(memberDTO.getEmail())) {
-            throw new MemberEmailAlreadyExistsException(memberDTO.getEmail());
+        try {
+            Member member = modelMapper.map(memberDTO, Member.class);
+            Member savedMember = memberRepository.save(member);
+            return modelMapper.map(savedMember, MemberDTO.class);
+        } catch (DuplicateKeyException e) {
+            if (existsByEmail(memberDTO.getEmail())) {
+                throw new MemberEmailAlreadyExistsException(memberDTO.getEmail());
+            }
         }
-        Member member = modelMapper.map(memberDTO, Member.class);
-        Member savedMember = memberRepository.save(member);
-        return modelMapper.map(savedMember, MemberDTO.class);
+        return null;
     }
-
 
     @Override
     public MemberDTO getMemberById(UUID memberId) {
