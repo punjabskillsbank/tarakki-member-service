@@ -7,8 +7,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.UUID;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/members")
@@ -20,12 +22,7 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<MemberDTO> createMember(@Valid @RequestBody MemberDTO memberDTO) {
         MemberDTO result = memberService.createMember(memberDTO);
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
-    }
+        return new ResponseEntity<>(result , HttpStatus.CREATED);
 
-    @GetMapping("/{id}")
-    public ResponseEntity<MemberDTO> getMemberById(@PathVariable("id") UUID memberId) {
-        MemberDTO memberDTO = memberService.getMemberById(memberId);
-        return ResponseEntity.ok(memberDTO);
     }
 }

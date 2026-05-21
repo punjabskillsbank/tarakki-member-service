@@ -25,16 +25,4 @@ public class MemberTestDataFactory {
         member.setAccountStatus(AccountStatus.ACTIVE);
         return member;
     }
-
-    public static MemberDTO createGetMemberDTO() {
-        MemberDTO dto = new MemberDTO();
-        dto.setFirstName("Amanpreet");
-        dto.setLastName("Kaur");
-        dto.setEmail("aman@test.com");
-        dto.setAccountStatus(AccountStatus.ACTIVE);
-        return dto;
-    }
-    public static UUID createRandomUUID() {
-        return UUID.randomUUID();
-    }
 }
