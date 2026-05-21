@@ -3,7 +3,7 @@
 
 ## JIRA Ticket
 
-[//]: # ( Please add the ticket link. Example: TK-123 )
+<!-- Please add the ticket link. Example: TK-123 -->
 
 ## Type of Change
 - [ ] New Feature
