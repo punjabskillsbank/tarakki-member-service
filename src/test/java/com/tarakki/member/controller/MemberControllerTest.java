@@ -4,7 +4,7 @@ package com.tarakki.member.controller;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.service.MemberService;
 import com.tarakki.member.util.MemberTestDataFactory;
-import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +15,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
 
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -55,4 +58,22 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.email").value(input.getEmail()))
                 .andExpect(jsonPath("$.firstName").value(input.getFirstName()));
     }
+
+    @Test
+    void testGetMemberDetailsByMemberId() throws Exception {
+        UUID memberId = UUID.randomUUID();
+
+        input.setMemberId(memberId);
+        output.setMemberId(memberId);
+
+        when(memberService.getMemberDetailsByMemberId(memberId))
+                .thenReturn(output);
+
+        mockMvc.perform(get("/api/members/" + memberId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value(output.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(output.getLastName()))
+                .andExpect(jsonPath("$.email").value(output.getEmail()));
     }
+}
