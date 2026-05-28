@@ -3,6 +3,8 @@ package com.tarakki.member.controller;
 
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,15 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/members")
+@Tag(name = "Member APIs", description = "Operations related to members")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
+    @Operation(summary = "Create a new member")
     @PostMapping
-    public ResponseEntity<MemberDTO> createMember(@Valid @RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<MemberDTO> createMember(
+            @Valid @RequestBody MemberDTO memberDTO) {
         MemberDTO result = memberService.createMember(memberDTO);
-        return new ResponseEntity<>(result , HttpStatus.CREATED);
-
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 }
