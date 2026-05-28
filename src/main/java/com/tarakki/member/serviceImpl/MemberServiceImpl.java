@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDTO getMemberDetailsByMemberId(UUID memberId) {
-        Optional<Member> member = Optional.of(memberRepository.findById(memberId)
+        Member member = (memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId)));
 
         return modelMapper.map(member, MemberDTO.class);

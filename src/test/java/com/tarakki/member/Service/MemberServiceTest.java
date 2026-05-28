@@ -102,7 +102,7 @@ class MemberServiceTest {
     @Test
     void testGetMemberDetailsByMemberId_shouldReturnMemberDetails() {
         when(memberRepository.findById(member.getMemberId())).thenReturn(Optional.of(member));
-        when(modelMapper.map(Optional.of(member), MemberDTO.class)).thenReturn(dto);
+        when(modelMapper.map((member), MemberDTO.class)).thenReturn(dto);
 
         MemberDTO result = memberService.getMemberDetailsByMemberId(member.getMemberId());
 
@@ -113,7 +113,7 @@ class MemberServiceTest {
         assertEquals(AccountStatus.ACTIVE, result.getAccountStatus());
 
         verify(memberRepository).findById(member.getMemberId());
-        verify(modelMapper).map(Optional.of(member), MemberDTO.class);
+        verify(modelMapper).map((member), MemberDTO.class);
 
     }
 

@@ -25,7 +25,7 @@ public class MemberController {
 
     }
 
-    @GetMapping("{memberId}")
+    @GetMapping("/{memberId}/getMemberById")
     public ResponseEntity<MemberDTO> getMemberDetailsByMemberId(@PathVariable UUID memberId) {
         MemberDTO memberDTO = memberService.getMemberDetailsByMemberId(memberId);
         return ResponseEntity.ok(memberDTO);
