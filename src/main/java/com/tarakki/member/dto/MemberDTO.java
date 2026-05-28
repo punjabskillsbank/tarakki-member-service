@@ -20,47 +20,29 @@ import java.util.UUID;
 @Schema(description = "Member data transfer object")
 public class MemberDTO {
 
-    @Schema(
-            description = "Unique member identifier",
-            example = "550e8400-e29b-41d4-a716-446655440000"
-    )
+    @Schema(description = "Unique member identifier")
     private UUID memberId;
 
     @NotBlank
     @Size(max = 100)
-    @Schema(
-            description = "Member first name",
-            example = "John"
-    )
+    @Schema(description = "Member first name")
     private String firstName;
 
     @NotBlank
     @Size(max = 100)
-    @Schema(
-            description = "Member last name",
-            example = "Doe"
-    )
+    @Schema(description = "Member last name")
     private String lastName;
 
     @NotBlank
     @Email
     @Size(max = 255)
-    @Schema(
-            description = "Member email address",
-            example = "john.doe@gmail.com"
-    )
+    @Schema(description = "Member email address")
     private String email;
 
-    @Schema(
-            description = "S3 key for profile photo",
-            example = "profile-photos/john-doe.png"
-    )
+    @Schema(description = "S3 key for profile photo")
     private String profilePhotoS3Key;
 
     @NotNull
-    @Schema(
-            description = "Current account status",
-            example = "INVITED"
-    )
+    @Schema(description = "Current account status")
     private AccountStatus accountStatus = AccountStatus.INVITED;
 }
