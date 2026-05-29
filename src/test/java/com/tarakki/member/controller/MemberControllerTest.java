@@ -69,7 +69,7 @@ class MemberControllerTest {
         when(memberService.getMemberDetailsByMemberId(memberId))
                 .thenReturn(output);
 
-        mockMvc.perform(get("/api/members/" + memberId+"/getMemberById")
+        mockMvc.perform(get("/api/members/" + memberId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value(output.getFirstName()))
@@ -82,7 +82,7 @@ class MemberControllerTest {
         when(memberService.getMemberDetailsByMemberId(memberId))
                 .thenThrow(new MemberNotFoundException(memberId));
 
-        mockMvc.perform(get("/api/members/" + memberId+"/getMemberById")
+        mockMvc.perform(get("/api/members/" + memberId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content().string(
