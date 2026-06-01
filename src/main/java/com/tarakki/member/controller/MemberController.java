@@ -16,16 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/members")
-@Tag(name = "Member APIs", description = "Operations related to members")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
-    @Operation(summary = "Create a new member")
     @PostMapping
-    public ResponseEntity<MemberDTO> createMember(
-            @Valid @RequestBody MemberDTO memberDTO) {
+    public ResponseEntity<MemberDTO> createMember(@Valid @RequestBody MemberDTO memberDTO) {
         MemberDTO result = memberService.createMember(memberDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
