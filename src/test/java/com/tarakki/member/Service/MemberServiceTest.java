@@ -1,6 +1,8 @@
 package com.tarakki.member.Service;
 
 import com.tarakki.common.entity.Member;
+import com.tarakki.common.enums.AccountStatus;
+import com.tarakki.common.exceptionHandling.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
@@ -14,6 +16,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -93,5 +97,30 @@ class MemberServiceTest {
 
         verify(memberRepository).save(any(Member.class));
         verify(memberRepository).existsByEmail(anyString());
+    }
+
+    @Test
+    void testGetMemberDetailsByMemberId_shouldReturnMemberDetails() {
+        when(memberRepository.findById(member.getMemberId())).thenReturn(Optional.of(member));
+        when(modelMapper.map((member), MemberDTO.class)).thenReturn(dto);
+
+        MemberDTO result = memberService.getMemberDetailsByMemberId(member.getMemberId());
+
+        assertNotNull(result);
+        assertEquals("Sahib", result.getFirstName());
+        assertEquals("Singh", result.getLastName());
+        assertEquals("sahib@gmail.com", result.getEmail());
+        assertEquals(AccountStatus.ACTIVE, result.getAccountStatus());
+
+        verify(memberRepository).findById(member.getMemberId());
+        verify(modelMapper).map((member), MemberDTO.class);
+
+    }
+
+    @Test
+    void shouldThrowExceptionWhenMemberNotFound() {
+        MemberNotFoundException memberNotFoundException = assertThrows(MemberNotFoundException.class,
+                () -> memberService.getMemberDetailsByMemberId(member.getMemberId()));
+        assertEquals("User not found at id:" + member.getMemberId(), memberNotFoundException.getMessage());
     }
 }
