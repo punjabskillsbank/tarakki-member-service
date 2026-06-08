@@ -9,13 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-
 public class MemberDTO {
 
     private UUID memberId;
@@ -37,5 +37,4 @@ public class MemberDTO {
 
     @NotNull
     private AccountStatus accountStatus = AccountStatus.INVITED;
-
 }
