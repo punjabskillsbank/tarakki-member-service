@@ -1,6 +1,7 @@
 package com.tarakki.member.serviceImpl;
 
 import com.tarakki.common.entity.Member;
+import com.tarakki.common.exceptionHandling.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
@@ -34,5 +35,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public boolean existsByEmail(String email) {
         return memberRepository.existsByEmail(email);
+    }
+
+    @Override
+    public MemberDTO getMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException(email));
+        return modelMapper.map(member, MemberDTO.class);
     }
 }

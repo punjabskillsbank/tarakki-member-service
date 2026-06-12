@@ -8,4 +8,6 @@ public interface MemberService {
 
     boolean existsByEmail(String email);
 
+    MemberDTO getMemberByEmail(String email);
+
 }

@@ -94,4 +94,29 @@ class MemberServiceTest {
         verify(memberRepository).save(any(Member.class));
         verify(memberRepository).existsByEmail(anyString());
     }
+
+    @Test
+    void shouldGetMemberByEmail() {
+        String email = "sahib@gmail.com";
+        when(memberRepository.findByEmail(email)).thenReturn(java.util.Optional.of(member));
+        when(modelMapper.map(member, MemberDTO.class)).thenReturn(dto);
+
+        MemberDTO result = memberService.getMemberByEmail(email);
+
+        assertNotNull(result);
+        assertEquals(dto.getEmail(), result.getEmail());
+        verify(memberRepository).findByEmail(email);
+        verify(modelMapper).map(member, MemberDTO.class);
+    }
+
+    @Test
+    void shouldThrowMemberNotFoundExceptionWhenEmailDoesNotExist() {
+        String email = "notfound@gmail.com";
+        when(memberRepository.findByEmail(email)).thenReturn(java.util.Optional.empty());
+
+        assertThrows(com.tarakki.common.exceptionHandling.MemberNotFoundException.class, () -> memberService.getMemberByEmail(email));
+
+        verify(memberRepository).findByEmail(email);
+        verifyNoInteractions(modelMapper);
+    }
 }
