@@ -1,10 +1,11 @@
 package com.tarakki.member.controller;
 
 
+import com.tarakki.common.exceptionHandling.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.service.MemberService;
 import com.tarakki.member.util.MemberTestDataFactory;
-import  org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.databind.ObjectMapper;
 
 
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -36,6 +41,8 @@ class MemberControllerTest {
 
     private MemberDTO input;
     private MemberDTO output;
+
+    UUID memberId = UUID.randomUUID();
 
     @BeforeEach
     void setUp() {
@@ -68,6 +75,19 @@ class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(output.getEmail()))
                 .andExpect(jsonPath("$.firstName").value(output.getFirstName()));
+
+    @Test
+    void testGetMemberDetailsByMemberId() throws Exception {
+
+        when(memberService.getMemberDetailsByMemberId(memberId))
+                .thenReturn(output);
+
+        mockMvc.perform(get("/api/members/" + memberId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value(output.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(output.getLastName()))
+                .andExpect(jsonPath("$.email").value(output.getEmail()));
     }
 
     @Test
@@ -79,5 +99,18 @@ class MemberControllerTest {
         mockMvc.perform(get("/api/members/{email}", email))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Member not found with email: " + email));
+    }
+}
+
+    @Test
+    void shouldReturnNotFoundWhenMemberDetailsNotFound() throws Exception {
+        when(memberService.getMemberDetailsByMemberId(memberId))
+                .thenThrow(new MemberNotFoundException(memberId));
+
+        mockMvc.perform(get("/api/members/" + memberId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.content().string(
+                        "User not found at id:"+ memberId));
     }
 }
