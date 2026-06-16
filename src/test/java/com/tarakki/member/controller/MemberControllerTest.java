@@ -23,9 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import com.tarakki.common.exceptionHandling.MemberNotFoundException;
 
 @WebMvcTest(MemberController.class)
 class MemberControllerTest {
@@ -36,8 +34,7 @@ class MemberControllerTest {
     @MockitoBean
     private MemberService memberService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private MemberDTO input;
     private MemberDTO output;
@@ -71,10 +68,11 @@ class MemberControllerTest {
         when(memberService.getMemberByEmail(email))
                 .thenReturn(output);
 
-        mockMvc.perform(get("/api/members/{email}", email))
+        mockMvc.perform(get("/api/members/email/{email}", email))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value(output.getEmail()))
                 .andExpect(jsonPath("$.firstName").value(output.getFirstName()));
+    }
 
     @Test
     void testGetMemberDetailsByMemberId() throws Exception {
@@ -96,11 +94,10 @@ class MemberControllerTest {
         when(memberService.getMemberByEmail(email))
                 .thenThrow(new MemberNotFoundException(email));
 
-        mockMvc.perform(get("/api/members/{email}", email))
+        mockMvc.perform(get("/api/members/email/{email}", email))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("Member not found with email: " + email));
     }
-}
 
     @Test
     void shouldReturnNotFoundWhenMemberDetailsNotFound() throws Exception {
