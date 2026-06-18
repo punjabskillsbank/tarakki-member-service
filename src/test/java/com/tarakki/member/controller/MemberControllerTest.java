@@ -64,7 +64,7 @@ class MemberControllerTest {
 
     @Test
     void shouldGetMemberByEmail() throws Exception {
-        String email = "sahib@gmail.com";
+        String email = output.getEmail();
         when(memberService.getMemberByEmail(email))
                 .thenReturn(output);
 
