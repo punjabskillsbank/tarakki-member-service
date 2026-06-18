@@ -1,7 +1,7 @@
 package com.tarakki.member.controller;
 
 
-import com.tarakki.common.exceptionHandling.MemberNotFoundException;
+import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.service.MemberService;
 import com.tarakki.member.util.MemberTestDataFactory;

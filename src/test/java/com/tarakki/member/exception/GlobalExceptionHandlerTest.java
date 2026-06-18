@@ -1,7 +1,7 @@
 package com.tarakki.member.exception;
 
 import com.tarakki.member.util.MemberTestDataFactory;
-import com.tarakki.common.exceptionHandling.MemberNotFoundException;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
