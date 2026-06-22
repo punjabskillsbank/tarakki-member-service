@@ -114,7 +114,7 @@ class MemberServiceTest {
 
     @Test
     void shouldThrowMemberNotFoundExceptionWhenEmailDoesNotExist() {
-        String email = "notfound@gmail.com";
+        String email = dto.getEmail();
         when(memberRepository.findByEmail(email)).thenReturn(java.util.Optional.empty());
 
         assertThrows(MemberNotFoundException.class, () -> memberService.getMemberByEmail(email));

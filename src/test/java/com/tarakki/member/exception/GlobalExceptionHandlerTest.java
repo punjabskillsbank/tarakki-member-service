@@ -34,9 +34,10 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void shouldHandleMemberNotFoundException() throws Exception {
+        String testEmail = MemberTestDataFactory.createMemberDTO().getEmail();
         mockMvc.perform(get("/test/not-found"))
                 .andExpect(status().isNotFound())
-                .andExpect(content().string("Member not found with email: test@gmail.com"));
+                .andExpect(content().string("Member not found with email: " + testEmail));
     }
 
     @RestController
@@ -49,7 +50,8 @@ class GlobalExceptionHandlerTest {
 
         @GetMapping("/test/not-found")
         public void throwNotFound() {
-            throw new MemberNotFoundException("test@gmail.com");
+            String testEmail = MemberTestDataFactory.createMemberDTO().getEmail();
+            throw new MemberNotFoundException(testEmail);
         }
     }
 }
