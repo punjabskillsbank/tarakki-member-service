@@ -1,6 +1,6 @@
 package com.tarakki.member.serviceImpl;
 
-import com.tarakki.common.entity.Member;
+import com.tarakki.member.entity.Member;
 import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

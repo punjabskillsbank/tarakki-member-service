@@ -1,6 +1,6 @@
 package com.tarakki.member.repository;
 
-import com.tarakki.common.entity.Member;
+import com.tarakki.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
