@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Import;
 
 
 @SpringBootApplication
-@EntityScan(basePackages = "com.tarakki.common.entity")
+@EntityScan(basePackages = {"com.tarakki.common.entity", "com.tarakki.member.entity"})
 @Import(CorsConfig.class)
 public class TarakkiMemberServiceApplication {
 

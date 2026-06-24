@@ -1,7 +1,7 @@
 package com.tarakki.member.serviceImpl;
 
-import com.tarakki.common.entity.Member;
-import com.tarakki.common.exceptionHandling.MemberNotFoundException;
+import com.tarakki.member.entity.Member;
+import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
@@ -11,7 +11,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -41,9 +40,16 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public MemberDTO getMemberByEmail(String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new MemberNotFoundException(email));
+        return modelMapper.map(member, MemberDTO.class);
+    }
+
+    @Override
     public MemberDTO getMemberDetailsByMemberId(UUID memberId) {
-        Member member = (memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException(memberId)));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         return modelMapper.map(member, MemberDTO.class);
     }

@@ -1,6 +1,6 @@
 package com.tarakki.member.util;
 
-import com.tarakki.common.entity.Member;
+import com.tarakki.member.entity.Member;
 import com.tarakki.common.enums.AccountStatus;
 import com.tarakki.member.dto.MemberDTO;
 

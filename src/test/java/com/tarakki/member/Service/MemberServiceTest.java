@@ -1,8 +1,7 @@
 package com.tarakki.member.Service;
 
-import com.tarakki.common.entity.Member;
-import com.tarakki.common.enums.AccountStatus;
-import com.tarakki.common.exceptionHandling.MemberNotFoundException;
+import com.tarakki.member.entity.Member;
+import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
@@ -100,6 +99,31 @@ class MemberServiceTest {
     }
 
     @Test
+    void shouldGetMemberByEmail() {
+        String email = dto.getEmail();
+        when(memberRepository.findByEmail(email)).thenReturn(java.util.Optional.of(member));
+        when(modelMapper.map(member, MemberDTO.class)).thenReturn(dto);
+
+        MemberDTO result = memberService.getMemberByEmail(email);
+
+        assertNotNull(result);
+        assertEquals(dto.getEmail(), result.getEmail());
+        verify(memberRepository).findByEmail(email);
+        verify(modelMapper).map(member, MemberDTO.class);
+    }
+
+    @Test
+    void shouldThrowMemberNotFoundExceptionWhenEmailDoesNotExist() {
+        String email = dto.getEmail();
+        when(memberRepository.findByEmail(email)).thenReturn(java.util.Optional.empty());
+
+        assertThrows(MemberNotFoundException.class, () -> memberService.getMemberByEmail(email));
+
+        verify(memberRepository).findByEmail(email);
+        verifyNoInteractions(modelMapper);
+    }
+
+    @Test
     void testGetMemberDetailsByMemberId_shouldReturnMemberDetails() {
         when(memberRepository.findById(member.getMemberId())).thenReturn(Optional.of(member));
         when(modelMapper.map((member), MemberDTO.class)).thenReturn(dto);
@@ -107,10 +131,10 @@ class MemberServiceTest {
         MemberDTO result = memberService.getMemberDetailsByMemberId(member.getMemberId());
 
         assertNotNull(result);
-        assertEquals("Sahib", result.getFirstName());
-        assertEquals("Singh", result.getLastName());
-        assertEquals("sahib@gmail.com", result.getEmail());
-        assertEquals(AccountStatus.ACTIVE, result.getAccountStatus());
+        assertEquals(dto.getFirstName(), result.getFirstName());
+        assertEquals(dto.getLastName(), result.getLastName());
+        assertEquals(dto.getEmail(), result.getEmail());
+        assertEquals(dto.getAccountStatus(), result.getAccountStatus());
 
         verify(memberRepository).findById(member.getMemberId());
         verify(modelMapper).map((member), MemberDTO.class);

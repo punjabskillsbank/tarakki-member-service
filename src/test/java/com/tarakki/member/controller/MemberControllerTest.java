@@ -1,7 +1,7 @@
 package com.tarakki.member.controller;
 
 
-import com.tarakki.common.exceptionHandling.MemberNotFoundException;
+import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.member.dto.MemberDTO;
 import com.tarakki.member.service.MemberService;
 import com.tarakki.member.util.MemberTestDataFactory;
@@ -34,8 +34,7 @@ class MemberControllerTest {
     @MockitoBean
     private MemberService memberService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private MemberDTO input;
     private MemberDTO output;
@@ -64,6 +63,18 @@ class MemberControllerTest {
     }
 
     @Test
+    void shouldGetMemberByEmail() throws Exception {
+        String email = output.getEmail();
+        when(memberService.getMemberByEmail(email))
+                .thenReturn(output);
+
+        mockMvc.perform(get("/api/members/email/{email}", email))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(output.getEmail()))
+                .andExpect(jsonPath("$.firstName").value(output.getFirstName()));
+    }
+
+    @Test
     void testGetMemberDetailsByMemberId() throws Exception {
 
         when(memberService.getMemberDetailsByMemberId(memberId))
@@ -75,6 +86,17 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.firstName").value(output.getFirstName()))
                 .andExpect(jsonPath("$.lastName").value(output.getLastName()))
                 .andExpect(jsonPath("$.email").value(output.getEmail()));
+    }
+
+    @Test
+    void shouldReturn404WhenMemberNotFound() throws Exception {
+        String email = "notfound@gmail.com";
+        when(memberService.getMemberByEmail(email))
+                .thenThrow(new MemberNotFoundException(email));
+
+        mockMvc.perform(get("/api/members/email/{email}", email))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string("Member not found with email: " + email));
     }
 
     @Test
