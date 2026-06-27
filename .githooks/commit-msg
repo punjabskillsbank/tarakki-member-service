@@ -1,0 +1,36 @@
+#!/bin/bash
+
+BRANCH=$(git branch --show-current)
+
+# Bypass validation for main and develop branches
+if [[ "$BRANCH" == "develop" || "$BRANCH" == "main" ]]; then
+    exit 0
+fi
+
+if [[ "$BRANCH" =~ ^(feature|bugfix)/(TK_[0-9]+)$ ]]; then
+    BRANCH_TK="${BASH_REMATCH[2]}"
+else
+    echo "Invalid branch name"
+    echo "Branch format must be: feature/TK_<TICKET_ID> or bugfix/TK_<TICKET_ID>"
+    echo "Please rename the branch!"
+    exit 1
+fi
+
+COMMIT_MSG=$(cat "$1")
+
+if [[ ! "$COMMIT_MSG" =~ ^(TK_[0-9]+):\ .+$ ]]; then
+    echo "Commit format must be:"
+    echo "$BRANCH_TK: message"
+    echo "Commit Failed"
+    exit 1
+fi
+
+COMMIT_TK="${BASH_REMATCH[1]}"
+
+if [[ "$COMMIT_TK" != "$BRANCH_TK" ]]; then
+    echo "Ticket mismatch"
+    echo "Branch: $BRANCH_TK"
+    echo "Commit: $COMMIT_TK"
+    echo "Commit Failed"
+    exit 1
+fi
