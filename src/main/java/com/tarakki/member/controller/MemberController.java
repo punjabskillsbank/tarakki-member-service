@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -37,5 +38,11 @@ public class MemberController {
     public ResponseEntity<MemberDTO> getMemberByEmail(@PathVariable String email) {
         MemberDTO result = memberService.getMemberByEmail(email);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MemberDTO>> getAllMembers() {
+        List<MemberDTO> members = memberService.getAllMembers();
+        return ResponseEntity.ok(members);
     }
 }

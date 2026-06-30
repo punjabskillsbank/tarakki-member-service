@@ -16,7 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class MemberRequestDTO {
+public class MemberDTO {
 
     private UUID memberId;
 
@@ -32,10 +32,6 @@ public class MemberRequestDTO {
     @Email
     @Size(max = 255)
     private String email;
-
-    @NotBlank
-    @Size(max = 255)
-    private String passwordHash;
 
     private String profilePhotoS3Key;
 

@@ -7,6 +7,7 @@ import com.tarakki.member.dto.MemberRequestDTO;
 import com.tarakki.member.service.MemberService;
 import com.tarakki.member.util.MemberTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.databind.ObjectMapper;
 
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -111,4 +113,20 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string(
                         "User not found at id:"+ memberId));
     }
+
+        @Test
+        @DisplayName("Should return list of members when GET /api/members is called")
+        void getAllMembers_ShouldReturn200() throws Exception {
+            // Arrange
+            MemberDTO member1 = MemberDTO.builder().firstName("John").build();
+            List<MemberDTO> mockList = List.of(member1);
+
+            when(memberService.getAllMembers()).thenReturn(mockList);
+
+            mockMvc.perform(get("/api/members")
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].firstName").value("John"));
+        }
+
 }
