@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -52,5 +53,12 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         return modelMapper.map(member, MemberDTO.class);
+    }
+
+    @Override
+    public List<MemberDTO> getAllMembers() {
+        return memberRepository.findAll().stream()
+                .map(member -> modelMapper.map(member, MemberDTO.class))
+                .toList();
     }
 }

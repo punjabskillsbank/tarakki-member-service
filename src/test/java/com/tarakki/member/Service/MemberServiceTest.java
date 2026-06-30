@@ -8,6 +8,7 @@ import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.serviceImpl.MemberServiceImpl;
 import com.tarakki.member.util.MemberTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
@@ -16,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -147,4 +149,19 @@ class MemberServiceTest {
                 () -> memberService.getMemberDetailsByMemberId(member.getMemberId()));
         assertEquals("User not found at id:" + member.getMemberId(), memberNotFoundException.getMessage());
     }
-}
+
+        @Test
+        @DisplayName("Should return mapped DTO list from repository")
+        void getAllMembers_Success() {
+            // Arrange
+            Member entity = new Member();
+            when(memberRepository.findAll()).thenReturn(List.of(entity));
+            when(modelMapper.map(any(Member.class), eq(MemberDTO.class))).thenReturn(new MemberDTO());
+
+            var result = memberService.getAllMembers();
+
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            verify(memberRepository, times(1)).findAll();
+        }
+    }
