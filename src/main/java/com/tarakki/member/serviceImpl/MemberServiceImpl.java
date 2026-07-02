@@ -24,15 +24,15 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberDTO createMember(MemberRequestDTO memberDTO) {
+    public MemberDTO createMember(MemberRequestDTO memberRequestDTO) {
         try {
-            Member member = modelMapper.map(memberDTO, Member.class);
-            member.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
+            Member member = modelMapper.map(memberRequestDTO, Member.class);
+            member.setPassword(passwordEncoder.encode(memberRequestDTO.getPassword()));
             Member savedMember = memberRepository.save(member);
             return modelMapper.map(savedMember, MemberDTO.class);
         } catch (DuplicateKeyException e) {
-            if (existsByEmail(memberDTO.getEmail())) {
-                throw new MemberEmailAlreadyExistsException(memberDTO.getEmail());
+            if (existsByEmail(memberRequestDTO.getEmail())) {
+                throw new MemberEmailAlreadyExistsException(memberRequestDTO.getEmail());
             }
         }
         return null;

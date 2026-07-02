@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface MemberService {
 
-    MemberDTO createMember(MemberRequestDTO memberDTO);
+    MemberDTO createMember(MemberRequestDTO memberRequestDTO);
 
     boolean existsByEmail(String email);
 
