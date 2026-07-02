@@ -2,7 +2,8 @@ package com.tarakki.member.Service;
 
 import com.tarakki.member.entity.Member;
 import com.tarakki.member.exception.MemberNotFoundException;
-import com.tarakki.member.dto.MemberDTO;
+import com.tarakki.common.dto.MemberDTO;
+import com.tarakki.member.dto.MemberRequestDTO;
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.serviceImpl.MemberServiceImpl;
@@ -22,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
     @Mock
@@ -29,6 +32,9 @@ class MemberServiceTest {
 
     @Mock
     private ModelMapper modelMapper;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private MemberServiceImpl memberService;
@@ -44,8 +50,13 @@ class MemberServiceTest {
 
     @Test
     void shouldCreateMember() {
-        when(modelMapper.map(any(MemberDTO.class), eq(Member.class)))
+        MemberRequestDTO requestDto = MemberTestDataFactory.createMemberRequestDTO();
+
+        when(modelMapper.map(any(MemberRequestDTO.class), eq(Member.class)))
                 .thenReturn(member);
+
+        when(passwordEncoder.encode(anyString()))
+                .thenReturn("encodedPassword123");
 
         when(memberRepository.save(any(Member.class)))
                 .thenReturn(member);
@@ -53,7 +64,7 @@ class MemberServiceTest {
         when(modelMapper.map(any(Member.class), eq(MemberDTO.class)))
                 .thenReturn(dto);
 
-        MemberDTO result = memberService.createMember(dto);
+        MemberDTO result = memberService.createMember(requestDto);
 
         assertNotNull(result);
         assertEquals(dto.getFirstName(), result.getFirstName());
@@ -61,21 +72,25 @@ class MemberServiceTest {
         assertEquals(dto.getEmail(), result.getEmail());
         assertEquals(dto.getAccountStatus(), result.getAccountStatus());
 
-        verify(modelMapper).map(any(MemberDTO.class), eq(Member.class));
+        verify(modelMapper).map(any(MemberRequestDTO.class), eq(Member.class));
         verify(memberRepository).save(any(Member.class));
         verify(modelMapper).map(any(Member.class), eq(MemberDTO.class));
     }
 
     @Test
     void shouldThrowExceptionWhenEmailAlreadyExists() {
-        when(modelMapper.map(any(MemberDTO.class), eq(Member.class)))
+        MemberRequestDTO requestDto = MemberTestDataFactory.createMemberRequestDTO();
+
+        when(modelMapper.map(any(MemberRequestDTO.class), eq(Member.class)))
                 .thenReturn(member);
+        when(passwordEncoder.encode(anyString()))
+                .thenReturn("encodedPassword123");
         when(memberRepository.save(any(Member.class)))
                 .thenThrow(new DuplicateKeyException("Duplicate key"));
         when(memberRepository.existsByEmail(anyString()))
                 .thenReturn(true);
 
-        assertThrows(MemberEmailAlreadyExistsException.class, () -> memberService.createMember(dto));
+        assertThrows(MemberEmailAlreadyExistsException.class, () -> memberService.createMember(requestDto));
 
         verify(memberRepository).save(any(Member.class));
         verify(memberRepository).existsByEmail(anyString());
@@ -83,14 +98,18 @@ class MemberServiceTest {
 
     @Test
     void shouldReturnNullWhenNotEmailDuplicate() {
-        when(modelMapper.map(any(MemberDTO.class), eq(Member.class)))
+        MemberRequestDTO requestDto = MemberTestDataFactory.createMemberRequestDTO();
+
+        when(modelMapper.map(any(MemberRequestDTO.class), eq(Member.class)))
                 .thenReturn(member);
+        when(passwordEncoder.encode(anyString()))
+                .thenReturn("encodedPassword123");
         when(memberRepository.save(any(Member.class)))
                 .thenThrow(new DuplicateKeyException("Other duplicate key"));
         when(memberRepository.existsByEmail(anyString()))
                 .thenReturn(false);
 
-        MemberDTO result = memberService.createMember(dto);
+        MemberDTO result = memberService.createMember(requestDto);
 
         assertNull(result);
 

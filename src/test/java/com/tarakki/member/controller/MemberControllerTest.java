@@ -2,7 +2,8 @@ package com.tarakki.member.controller;
 
 
 import com.tarakki.member.exception.MemberNotFoundException;
-import com.tarakki.member.dto.MemberDTO;
+import com.tarakki.common.dto.MemberDTO;
+import com.tarakki.member.dto.MemberRequestDTO;
 import com.tarakki.member.service.MemberService;
 import com.tarakki.member.util.MemberTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,7 +37,7 @@ class MemberControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private MemberDTO input;
+    private MemberRequestDTO input;
     private MemberDTO output;
 
     UUID memberId = UUID.randomUUID();
@@ -44,7 +45,7 @@ class MemberControllerTest {
     @BeforeEach
     void setUp() {
 
-        input = MemberTestDataFactory.createMemberDTO();
+        input = MemberTestDataFactory.createMemberRequestDTO();
         output = MemberTestDataFactory.createMemberDTO();
     }
 

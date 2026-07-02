@@ -2,13 +2,15 @@ package com.tarakki.member.serviceImpl;
 
 import com.tarakki.member.entity.Member;
 import com.tarakki.member.exception.MemberNotFoundException;
-import com.tarakki.member.dto.MemberDTO;
+import com.tarakki.common.dto.MemberDTO;
+import com.tarakki.member.dto.MemberRequestDTO;
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -19,11 +21,13 @@ public class MemberServiceImpl implements MemberService {
 
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberDTO createMember(MemberDTO memberDTO) {
+    public MemberDTO createMember(MemberRequestDTO memberDTO) {
         try {
             Member member = modelMapper.map(memberDTO, Member.class);
+            member.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
             Member savedMember = memberRepository.save(member);
             return modelMapper.map(savedMember, MemberDTO.class);
         } catch (DuplicateKeyException e) {
