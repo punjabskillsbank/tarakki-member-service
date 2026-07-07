@@ -35,7 +35,7 @@ public class Member {
     @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(name = "password_hash", nullable = false, length = 255)
     private String password;
 
     @Column(name = "profile_photo_s3_key", columnDefinition = "TEXT")
