@@ -3,11 +3,13 @@ package com.tarakki.member.controller;
 
 import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.common.dto.MemberDTO;
+<<<<<<< HEAD
 import com.tarakki.member.dto.MemberRequestDTO;
+=======
+>>>>>>> 9cfd56d (TK_54: resolve comments as per reviews)
 import com.tarakki.member.service.MemberService;
 import com.tarakki.member.util.MemberTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,19 +116,19 @@ class MemberControllerTest {
                         "User not found at id:"+ memberId));
     }
 
-        @Test
-        @DisplayName("Should return list of members when GET /api/members is called")
-        void getAllMembers_ShouldReturn200() throws Exception {
-            // Arrange
-            MemberDTO member1 = MemberDTO.builder().firstName("John").build();
-            List<MemberDTO> mockList = List.of(member1);
+    @Test
+    void getAllMembers_ShouldReturn200() throws Exception {
+        // 1. Arrange
+        MemberDTO member1 = MemberTestDataFactory.createMemberDTO();
+        List<MemberDTO> mockList = List.of(member1);
 
-            when(memberService.getAllMembers()).thenReturn(mockList);
+        when(memberService.getAllMembers()).thenReturn(mockList);
 
-            mockMvc.perform(get("/api/members")
-                            .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].firstName").value("John"));
-        }
+        // 2. Assert
+        mockMvc.perform(get("/api/members")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].firstName").value(member1.getFirstName()));
+    }
 
 }

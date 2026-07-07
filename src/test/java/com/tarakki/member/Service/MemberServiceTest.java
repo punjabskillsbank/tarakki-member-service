@@ -3,13 +3,15 @@ package com.tarakki.member.Service;
 import com.tarakki.member.entity.Member;
 import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.common.dto.MemberDTO;
+<<<<<<< HEAD
 import com.tarakki.member.dto.MemberRequestDTO;
+=======
+>>>>>>> 9cfd56d (TK_54: resolve comments as per reviews)
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.serviceImpl.MemberServiceImpl;
 import com.tarakki.member.util.MemberTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.modelmapper.ModelMapper;
@@ -170,7 +172,6 @@ class MemberServiceTest {
     }
 
         @Test
-        @DisplayName("Should return mapped DTO list from repository")
         void getAllMembers_Success() {
             // Arrange
             Member entity = new Member();
