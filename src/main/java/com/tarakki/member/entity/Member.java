@@ -36,7 +36,7 @@ public class Member {
     private String email;
 
     @Column(name = "password_hash", nullable = false, length = 255)
-    private String password;
+    private String passwordHash;
 
     @Column(name = "profile_photo_s3_key", columnDefinition = "TEXT")
     private String profilePhotoS3Key;

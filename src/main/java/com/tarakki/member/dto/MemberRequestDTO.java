@@ -35,7 +35,7 @@ public class MemberRequestDTO {
 
     @NotBlank
     @Size(max = 255)
-    private String password;
+    private String passwordHash;
 
     private String profilePhotoS3Key;
 

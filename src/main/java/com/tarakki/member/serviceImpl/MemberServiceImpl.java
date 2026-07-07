@@ -27,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberDTO createMember(MemberRequestDTO memberRequestDTO) {
         try {
             Member member = modelMapper.map(memberRequestDTO, Member.class);
-            member.setPassword(passwordEncoder.encode(memberRequestDTO.getPassword()));
+            member.setPasswordHash(passwordEncoder.encode(memberRequestDTO.getPasswordHash()));
             Member savedMember = memberRepository.save(member);
             return modelMapper.map(savedMember, MemberDTO.class);
         } catch (DuplicateKeyException e) {

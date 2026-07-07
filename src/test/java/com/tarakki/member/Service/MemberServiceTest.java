@@ -56,7 +56,7 @@ class MemberServiceTest {
                 .thenReturn(member);
 
         when(passwordEncoder.encode(anyString()))
-                .thenReturn(member.getPassword());
+                .thenReturn(member.getPasswordHash());
 
         when(memberRepository.save(any(Member.class)))
                 .thenReturn(member);
@@ -84,7 +84,7 @@ class MemberServiceTest {
         when(modelMapper.map(any(MemberRequestDTO.class), eq(Member.class)))
                 .thenReturn(member);
         when(passwordEncoder.encode(anyString()))
-                .thenReturn(member.getPassword());
+                .thenReturn(member.getPasswordHash());
         when(memberRepository.save(any(Member.class)))
                 .thenThrow(new DuplicateKeyException("Duplicate key"));
         when(memberRepository.existsByEmail(anyString()))
@@ -103,7 +103,7 @@ class MemberServiceTest {
         when(modelMapper.map(any(MemberRequestDTO.class), eq(Member.class)))
                 .thenReturn(member);
         when(passwordEncoder.encode(anyString()))
-                .thenReturn(member.getPassword());
+                .thenReturn(member.getPasswordHash());
         when(memberRepository.save(any(Member.class)))
                 .thenThrow(new DuplicateKeyException("Other duplicate key"));
         when(memberRepository.existsByEmail(anyString()))

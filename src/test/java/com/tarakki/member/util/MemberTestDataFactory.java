@@ -22,7 +22,7 @@ public class MemberTestDataFactory {
         dto.setFirstName("Sahib");
         dto.setLastName("Singh");
         dto.setEmail("sahib@gmail.com");
-        dto.setPassword("securePassword123");
+        dto.setPasswordHash("securePassword123");
         dto.setAccountStatus(AccountStatus.ACTIVE);
         return dto;
     }
@@ -33,7 +33,7 @@ public class MemberTestDataFactory {
         member.setFirstName("Sahib");
         member.setLastName("Singh");
         member.setEmail("sahib@gmail.com");
-        member.setPassword("encodedPassword123");
+        member.setPasswordHash("encodedPassword123");
         member.setAccountStatus(AccountStatus.ACTIVE);
         return member;
     }
