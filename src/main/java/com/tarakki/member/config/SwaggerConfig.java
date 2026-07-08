@@ -5,6 +5,10 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for Swagger/OpenAPI.
+ * Swagger UI can be accessed at: http://localhost:8081/swagger-ui/index.html
+ */
 @Configuration
 public class SwaggerConfig {
 
