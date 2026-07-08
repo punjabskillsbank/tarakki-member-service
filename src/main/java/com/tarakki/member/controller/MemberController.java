@@ -1,7 +1,8 @@
 package com.tarakki.member.controller;
 
 
-import com.tarakki.member.dto.MemberDTO;
+import com.tarakki.common.dto.MemberDTO;
+import com.tarakki.member.dto.MemberRequestDTO;
 import com.tarakki.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +22,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<MemberDTO> createMember(@Valid @RequestBody MemberDTO memberDTO) {
-        MemberDTO result = memberService.createMember(memberDTO);
+    public ResponseEntity<MemberDTO> createMember(@Valid @RequestBody MemberRequestDTO memberRequestDTO) {
+        MemberDTO result = memberService.createMember(memberRequestDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
-
     }
 
     @GetMapping("/{memberId}")
