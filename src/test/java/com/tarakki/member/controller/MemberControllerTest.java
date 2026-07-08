@@ -118,13 +118,12 @@ class MemberControllerTest {
 
     @Test
     void getAllMembers_ShouldReturn200() throws Exception {
-        // 1. Arrange
+
         MemberDTO member1 = MemberTestDataFactory.createMemberDTO();
         List<MemberDTO> mockList = List.of(member1);
 
         when(memberService.getAllMembers()).thenReturn(mockList);
 
-        // 2. Assert
         mockMvc.perform(get("/api/members")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
