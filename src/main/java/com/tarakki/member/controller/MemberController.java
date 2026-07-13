@@ -1,12 +1,7 @@
 package com.tarakki.member.controller;
 
-<<<<<<< HEAD
-
 import com.tarakki.common.dto.MemberDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
-=======
-import com.tarakki.common.dto.MemberDTO;
->>>>>>> 9cfd56d (TK_54: resolve comments as per reviews)
 import com.tarakki.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
