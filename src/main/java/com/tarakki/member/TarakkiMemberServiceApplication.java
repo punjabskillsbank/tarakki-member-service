@@ -6,9 +6,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.context.annotation.Import;
 
-
-//@SpringBootApplication
-//@EntityScan(basePackages = {"com.tarakki.common.entity", "com.tarakki.member.entity"})
 @SpringBootApplication(scanBasePackages = {"com.tarakki.member"})
 @EntityScan(basePackages = {"com.tarakki.member.entity"})
 @Import(CorsConfig.class)

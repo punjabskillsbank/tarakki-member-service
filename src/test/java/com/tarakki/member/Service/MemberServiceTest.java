@@ -170,7 +170,7 @@ class MemberServiceTest {
 
         @Test
         void getAllMembers_Success() {
-            // Arrange
+
             Member entity = new Member();
             when(memberRepository.findAll()).thenReturn(List.of(entity));
             when(modelMapper.map(any(Member.class), eq(MemberDTO.class))).thenReturn(new MemberDTO());
