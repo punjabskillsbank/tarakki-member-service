@@ -175,7 +175,7 @@ class MemberServiceTest {
             when(memberRepository.findAll()).thenReturn(List.of(entity));
             when(modelMapper.map(any(Member.class), eq(MemberDTO.class))).thenReturn(new MemberDTO());
 
-            var result = memberService.getAllMembers();
+            List<MemberDTO> result = memberService.getAllMembers();
 
             assertNotNull(result);
             assertEquals(1, result.size());
