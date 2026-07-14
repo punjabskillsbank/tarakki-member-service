@@ -19,5 +19,5 @@ jobs:
           curl -X POST "$SLACK_WEBHOOK" \
             -H 'Content-Type: application/json' \
             --data '{
-              "text": "✅ PR merged into *develop*\n*Title:* '"${{ github.event.pull_request.title }}"'\n*Author:* '"${{ github.event.pull_request.user.login }}"'\n*Merged by:* '"${{ github.event.pull_request.merged_by.login }}"'\n*Branch:* '"${{ github.event.pull_request.head.ref }}"' → develop\n'"${{ github.event.pull_request.html_url }}"'"
+              "text": "✅ PR merged into *develop*\n*Repo:* '"${{ github.event.repository.name }}"'\n*Title:* '"${{ github.event.pull_request.title }}"'\n*Author:* '"${{ github.event.pull_request.user.login }}"'\n*Merged by:* '"${{ github.event.pull_request.merged_by.login }}"'\n*Branch:* '"${{ github.event.pull_request.head.ref }}"' → develop\n'"${{ github.event.pull_request.html_url }}"'"
             }'
