@@ -3,10 +3,7 @@ package com.tarakki.member.util;
 import com.tarakki.member.entity.Member;
 import com.tarakki.common.enums.AccountStatus;
 import com.tarakki.common.dto.MemberDTO;
-<<<<<<< HEAD
 import com.tarakki.member.dto.MemberRequestDTO;
-=======
->>>>>>> 9cfd56d (TK_54: resolve comments as per reviews)
 
 import java.util.UUID;
 

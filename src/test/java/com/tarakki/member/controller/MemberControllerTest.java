@@ -3,10 +3,7 @@ package com.tarakki.member.controller;
 
 import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.common.dto.MemberDTO;
-<<<<<<< HEAD
 import com.tarakki.member.dto.MemberRequestDTO;
-=======
->>>>>>> 9cfd56d (TK_54: resolve comments as per reviews)
 import com.tarakki.member.service.MemberService;
 import com.tarakki.member.util.MemberTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
