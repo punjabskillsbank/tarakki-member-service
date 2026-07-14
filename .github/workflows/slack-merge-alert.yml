@@ -1,0 +1,23 @@
+name: Notify Slack on merge to develop
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - develop
+
+jobs:
+  notify:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack notification
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          curl -X POST "$SLACK_WEBHOOK" \
+            -H 'Content-Type: application/json' \
+            --data '{
+              "text": "✅ PR merged into *develop*\n*Title:* '"${{ github.event.pull_request.title }}"'\n*Author:* '"${{ github.event.pull_request.user.login }}"'\n*Merged by:* '"${{ github.event.pull_request.merged_by.login }}"'\n*Branch:* '"${{ github.event.pull_request.head.ref }}"' → develop\n'"${{ github.event.pull_request.html_url }}"'"
+            }'
