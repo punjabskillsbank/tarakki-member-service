@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -166,4 +167,18 @@ class MemberServiceTest {
                 () -> memberService.getMemberDetailsByMemberId(member.getMemberId()));
         assertEquals("User not found at id:" + member.getMemberId(), memberNotFoundException.getMessage());
     }
-}
+
+        @Test
+        void getAllMembers_Success() {
+
+            Member entity = new Member();
+            when(memberRepository.findAll()).thenReturn(List.of(entity));
+            when(modelMapper.map(any(Member.class), eq(MemberDTO.class))).thenReturn(new MemberDTO());
+
+            List<MemberDTO> result = memberService.getAllMembers();
+
+            assertNotNull(result);
+            assertEquals(1, result.size());
+            verify(memberRepository, times(1)).findAll();
+        }
+    }

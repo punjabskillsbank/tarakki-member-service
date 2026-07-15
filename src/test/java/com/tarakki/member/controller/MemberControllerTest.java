@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.databind.ObjectMapper;
 
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -111,4 +112,19 @@ class MemberControllerTest {
                 .andExpect(MockMvcResultMatchers.content().string(
                         "User not found at id:"+ memberId));
     }
+
+    @Test
+    void getAllMembers_ShouldReturn200() throws Exception {
+
+        MemberDTO member1 = MemberTestDataFactory.createMemberDTO();
+        List<MemberDTO> mockList = List.of(member1);
+
+        when(memberService.getAllMembers()).thenReturn(mockList);
+
+        mockMvc.perform(get("/api/members")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].firstName").value(member1.getFirstName()));
+    }
+
 }
