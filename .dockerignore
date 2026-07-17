@@ -1,0 +1,10 @@
+target/
+*.class
+.git/
+.github/
+.githooks/
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
