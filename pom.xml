@@ -86,6 +86,13 @@
 		</dependency>
 	</dependencies>
 
+	<repositories>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/punjabskillsbank/tarakki-common</url>
+		</repository>
+	</repositories>
+
 	<build>
 		<plugins>
 			<plugin>
