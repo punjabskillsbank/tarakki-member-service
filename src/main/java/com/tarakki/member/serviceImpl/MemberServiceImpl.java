@@ -75,4 +75,12 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.deleteById(memberId);
     }
+
+    @Override
+    public MemberDTO updateMemberByMemberId(UUID memberId, MemberRequestDTO memberRequestDTO) {
+        Member exitingMember = memberRepository.findById((memberId)).orElseThrow(() -> new MemberNotFoundException(memberId));
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.map(memberRequestDTO, exitingMember);
+        return modelMapper.map(memberRepository.save(exitingMember), MemberDTO.class);
+    }
 }

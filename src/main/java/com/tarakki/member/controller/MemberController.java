@@ -35,7 +35,7 @@ public class MemberController {
 
     @GetMapping("/email/{email}")
     public ResponseEntity<MemberDTO> getMemberByEmail(@PathVariable String email) {
-       MemberDTO result = memberService.getMemberByEmail(email);
+        MemberDTO result = memberService.getMemberByEmail(email);
         return ResponseEntity.ok(result);
     }
 
@@ -49,5 +49,11 @@ public class MemberController {
     public ResponseEntity<String> deleteMember(@PathVariable UUID memberId) {
         memberService.deleteMember(memberId);
         return ResponseEntity.ok("Member deleted successfully with id: " + memberId);
+    }
+
+    @PatchMapping
+    public ResponseEntity<MemberDTO> updateMemberByMemberId(@PathVariable UUID memberId, @Valid @RequestBody MemberRequestDTO memberRequestDTO) {
+        MemberDTO memberDTO = memberService.updateMemberByMemberId(memberId,memberRequestDTO);
+        return new ResponseEntity<>(memberDTO,HttpStatus.OK);
     }
 }
