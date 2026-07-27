@@ -51,9 +51,10 @@ public class MemberController {
         return ResponseEntity.ok("Member deleted successfully with id: " + memberId);
     }
 
-    @PatchMapping
+
+    @PatchMapping("/{memberId}")
     public ResponseEntity<MemberDTO> updateMemberByMemberId(@PathVariable UUID memberId, @Valid @RequestBody MemberRequestDTO memberRequestDTO) {
-        MemberDTO memberDTO = memberService.updateMemberByMemberId(memberId,memberRequestDTO);
-        return new ResponseEntity<>(memberDTO,HttpStatus.OK);
+        MemberDTO memberDTO = memberService.updateMemberByMemberId(memberId, memberRequestDTO);
+        return new ResponseEntity<>(memberDTO, HttpStatus.OK);
     }
 }

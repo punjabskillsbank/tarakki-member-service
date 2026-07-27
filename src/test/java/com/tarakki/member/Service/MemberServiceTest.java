@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
+import org.modelmapper.config.Configuration;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,11 +44,15 @@ class MemberServiceTest {
 
     private MemberDTO dto;
     private Member member;
+    private UUID memberId;
+    private MemberRequestDTO memberRequestDTO;
 
     @BeforeEach
     void setUp() {
         dto = MemberTestDataFactory.createMemberDTO();
         member = MemberTestDataFactory.createMemberEntity();
+        memberRequestDTO = MemberTestDataFactory.createMemberRequestDTO();
+        memberId = member.getMemberId();
     }
 
     @Test
@@ -169,14 +174,14 @@ class MemberServiceTest {
         assertEquals("User not found at id:" + member.getMemberId(), memberNotFoundException.getMessage());
     }
 
-        @Test
-        void getAllMembers_Success() {
+    @Test
+    void getAllMembers_Success() {
 
-            Member entity = new Member();
-            when(memberRepository.findAll()).thenReturn(List.of(entity));
-            when(modelMapper.map(any(Member.class), eq(MemberDTO.class))).thenReturn(new MemberDTO());
+        Member entity = new Member();
+        when(memberRepository.findAll()).thenReturn(List.of(entity));
+        when(modelMapper.map(any(Member.class), eq(MemberDTO.class))).thenReturn(new MemberDTO());
 
-            List<MemberDTO> result = memberService.getAllMembers();
+        List<MemberDTO> result = memberService.getAllMembers();
 
             assertNotNull(result);
             assertEquals(1, result.size());
@@ -204,5 +209,40 @@ class MemberServiceTest {
         assertEquals("User not found at id:" + member.getMemberId(), exception.getMessage());
         verify(memberRepository).existsById(member.getMemberId());
         verify(memberRepository, never()).deleteById(any(UUID.class));
+    }
+
+    @Test
+    void shouldUpdateMemberById() {
+        when(memberRepository.findById(memberId)).thenReturn(Optional.of(member));
+
+        Configuration mockConfig = mock(Configuration.class);
+        when(modelMapper.getConfiguration()).thenReturn(mockConfig);
+
+        doAnswer(invocation -> {
+            member.setMemberId(memberId);
+            member.setFirstName(memberRequestDTO.getFirstName());
+            member.setLastName(memberRequestDTO.getLastName());
+            member.setEmail(memberRequestDTO.getEmail());
+            member.setAccountStatus(memberRequestDTO.getAccountStatus());
+            return null;
+        }).when(modelMapper).map(memberRequestDTO, member);
+
+        when(modelMapper.map(memberRepository.save(member), MemberDTO.class)).thenReturn(dto);
+        MemberDTO result = memberService.updateMemberByMemberId(memberId, memberRequestDTO);
+
+        assertNotNull(result);
+        assertEquals(memberRequestDTO.getMemberId(),result.getMemberId());
+        assertEquals(memberRequestDTO.getFirstName(), result.getFirstName());
+        assertEquals(memberRequestDTO.getLastName(), result.getLastName());
+        assertEquals(memberRequestDTO.getEmail(), result.getEmail());
+        assertEquals(memberRequestDTO.getAccountStatus(), result.getAccountStatus());
+        assertEquals(memberRequestDTO.getProfilePhotoS3Key(), result.getProfilePhotoS3Key());
+
+        verify(memberRepository,times(1)).findById(memberId);
+        verify(modelMapper,times(1)).getConfiguration();
+        verify(mockConfig,times(1)).setSkipNullEnabled(true);
+        verify(modelMapper,times(1)).map(memberRequestDTO, member);
+        verify(memberRepository,times(2)).save(member);
+
     }
 }

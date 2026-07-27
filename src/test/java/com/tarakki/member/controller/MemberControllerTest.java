@@ -22,9 +22,11 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -113,7 +115,7 @@ class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.content().string(
-                        "User not found at id:"+ memberId));
+                        "User not found at id:" + memberId));
     }
 
     @Test
@@ -146,6 +148,19 @@ class MemberControllerTest {
         mockMvc.perform(delete("/api/members/" + memberId))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("User not found at id:" + memberId));
+    }
+
+    @Test
+    void shouldUpdateMemberByMemberId() throws Exception {
+        when(memberService.updateMemberByMemberId(eq(memberId), any(MemberRequestDTO.class))).thenReturn(output);
+
+        mockMvc.perform(patch("/api/members/" + memberId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(input)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value(output.getFirstName()))
+                .andExpect(jsonPath("$.lastName").value(output.getLastName()))
+                .andExpect(jsonPath("$.email").value(output.getEmail()));
     }
 
 }
