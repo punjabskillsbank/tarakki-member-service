@@ -44,4 +44,10 @@ public class MemberController {
         List<MemberDTO> members = memberService.getAllMembers();
         return ResponseEntity.ok(members);
     }
+
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<String> deleteMember(@PathVariable UUID memberId) {
+        memberService.deleteMember(memberId);
+        return ResponseEntity.ok("Member deleted successfully with id: " + memberId);
+    }
 }

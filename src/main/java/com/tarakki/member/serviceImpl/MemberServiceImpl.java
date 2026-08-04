@@ -66,4 +66,13 @@ public class MemberServiceImpl implements MemberService {
                 .map(member -> modelMapper.map(member, MemberDTO.class))
                 .toList();
     }
+
+    @Override
+    public void deleteMember(UUID memberId) {
+        if (!memberRepository.existsById(memberId)) {
+            throw new MemberNotFoundException(memberId);
+        }
+
+        memberRepository.deleteById(memberId);
+    }
 }

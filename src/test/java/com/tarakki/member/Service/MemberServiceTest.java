@@ -19,6 +19,7 @@ import org.springframework.dao.DuplicateKeyException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -181,4 +182,27 @@ class MemberServiceTest {
             assertEquals(1, result.size());
             verify(memberRepository, times(1)).findAll();
         }
+
+    @Test
+    void shouldDeleteMember() {
+        when(memberRepository.existsById(member.getMemberId())).thenReturn(true);
+
+        memberService.deleteMember(member.getMemberId());
+
+        verify(memberRepository).existsById(member.getMemberId());
+        verify(memberRepository).deleteById(member.getMemberId());
+        verifyNoInteractions(modelMapper);
     }
+
+    @Test
+    void shouldThrowExceptionWhenDeletingMemberThatDoesNotExist() {
+        when(memberRepository.existsById(member.getMemberId())).thenReturn(false);
+
+        MemberNotFoundException exception = assertThrows(MemberNotFoundException.class,
+                () -> memberService.deleteMember(member.getMemberId()));
+
+        assertEquals("User not found at id:" + member.getMemberId(), exception.getMessage());
+        verify(memberRepository).existsById(member.getMemberId());
+        verify(memberRepository, never()).deleteById(any(UUID.class));
+    }
+}
