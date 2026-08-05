@@ -18,4 +18,6 @@ public interface MemberService {
     MemberDTO getMemberDetailsByMemberId(UUID memberId);
 
     List<MemberDTO> getAllMembers();
+
+    void deleteMember(UUID memberId);
 }
