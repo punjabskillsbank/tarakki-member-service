@@ -1,5 +1,6 @@
 package com.tarakki.member.serviceImpl;
 
+import com.tarakki.member.dto.MemberUpdateDTO;
 import com.tarakki.member.entity.Member;
 import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.common.dto.MemberDTO;
@@ -77,10 +78,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public MemberDTO updateMemberByMemberId(UUID memberId, MemberRequestDTO memberRequestDTO) {
+    public MemberDTO updateMemberByMemberId(UUID memberId, MemberUpdateDTO memberUpdateDTO) {
         Member existingMember = memberRepository.findById((memberId)).orElseThrow(() -> new MemberNotFoundException(memberId));
         modelMapper.getConfiguration().setSkipNullEnabled(true);
-        modelMapper.map(memberRequestDTO, existingMember);
+        modelMapper.map(memberUpdateDTO, existingMember);
         return modelMapper.map(memberRepository.save(existingMember), MemberDTO.class);
     }
 }

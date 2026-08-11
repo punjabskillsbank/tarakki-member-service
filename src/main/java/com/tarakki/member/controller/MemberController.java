@@ -2,6 +2,7 @@ package com.tarakki.member.controller;
 
 import com.tarakki.common.dto.MemberDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
+import com.tarakki.member.dto.MemberUpdateDTO;
 import com.tarakki.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -51,9 +52,8 @@ public class MemberController {
         return ResponseEntity.ok("Member deleted successfully with id: " + memberId);
     }
 
-
     @PatchMapping("/{memberId}")
-    public ResponseEntity<MemberDTO> updateMemberByMemberId(@PathVariable UUID memberId, @Valid @RequestBody MemberRequestDTO memberRequestDTO) {
+    public ResponseEntity<MemberDTO> updateMemberByMemberId(@PathVariable UUID memberId, @Valid @RequestBody MemberUpdateDTO memberRequestDTO) {
         MemberDTO memberDTO = memberService.updateMemberByMemberId(memberId, memberRequestDTO);
         return new ResponseEntity<>(memberDTO, HttpStatus.OK);
     }

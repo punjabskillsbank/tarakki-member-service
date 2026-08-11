@@ -1,5 +1,6 @@
 package com.tarakki.member.Service;
 
+import com.tarakki.member.dto.MemberUpdateDTO;
 import com.tarakki.member.entity.Member;
 import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.common.dto.MemberDTO;
@@ -15,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.config.Configuration;
 import org.springframework.dao.DuplicateKeyException;
 import org.modelmapper.config.Configuration;
 
@@ -45,13 +47,13 @@ class MemberServiceTest {
     private MemberDTO dto;
     private Member member;
     private UUID memberId;
-    private MemberRequestDTO memberRequestDTO;
+    private MemberUpdateDTO memberRequestDTO;
 
     @BeforeEach
     void setUp() {
         dto = MemberTestDataFactory.createMemberDTO();
         member = MemberTestDataFactory.createMemberEntity();
-        memberRequestDTO = MemberTestDataFactory.createMemberRequestDTO();
+        memberRequestDTO = MemberTestDataFactory.createMemberUpdateDTO();
         memberId = member.getMemberId();
     }
 
@@ -231,18 +233,18 @@ class MemberServiceTest {
         MemberDTO result = memberService.updateMemberByMemberId(memberId, memberRequestDTO);
 
         assertNotNull(result);
-        assertEquals(memberRequestDTO.getMemberId(),result.getMemberId());
+        assertEquals(memberRequestDTO.getMemberId(), result.getMemberId());
         assertEquals(memberRequestDTO.getFirstName(), result.getFirstName());
         assertEquals(memberRequestDTO.getLastName(), result.getLastName());
         assertEquals(memberRequestDTO.getEmail(), result.getEmail());
         assertEquals(memberRequestDTO.getAccountStatus(), result.getAccountStatus());
         assertEquals(memberRequestDTO.getProfilePhotoS3Key(), result.getProfilePhotoS3Key());
 
-        verify(memberRepository,times(1)).findById(memberId);
-        verify(modelMapper,times(1)).getConfiguration();
-        verify(mockConfig,times(1)).setSkipNullEnabled(true);
-        verify(modelMapper,times(1)).map(memberRequestDTO, member);
-        verify(memberRepository,times(2)).save(member);
+        verify(memberRepository, times(1)).findById(memberId);
+        verify(modelMapper, times(1)).getConfiguration();
+        verify(mockConfig, times(1)).setSkipNullEnabled(true);
+        verify(modelMapper, times(1)).map(memberRequestDTO, member);
+        verify(memberRepository, times(2)).save(member);
 
     }
 }

@@ -1,6 +1,7 @@
 package com.tarakki.member.controller;
 
 
+import com.tarakki.member.dto.MemberUpdateDTO;
 import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.common.dto.MemberDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
@@ -25,11 +26,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MemberController.class)
@@ -152,7 +155,7 @@ class MemberControllerTest {
 
     @Test
     void shouldUpdateMemberByMemberId() throws Exception {
-        when(memberService.updateMemberByMemberId(eq(memberId), any(MemberRequestDTO.class))).thenReturn(output);
+        when(memberService.updateMemberByMemberId(eq(memberId), any(MemberUpdateDTO.class))).thenReturn(output);
 
         mockMvc.perform(patch("/api/members/" + memberId)
                         .contentType(MediaType.APPLICATION_JSON)

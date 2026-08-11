@@ -2,6 +2,7 @@ package com.tarakki.member.service;
 
 import com.tarakki.common.dto.MemberDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
+import com.tarakki.member.dto.MemberUpdateDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +21,6 @@ public interface MemberService {
 
     void deleteMember(UUID memberId);
 
-    MemberDTO updateMemberByMemberId(UUID memberId, MemberRequestDTO memberRequestDTO);
+    MemberDTO updateMemberByMemberId(UUID memberId, MemberUpdateDTO memberUpdateDTO);
 
 }
