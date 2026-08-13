@@ -45,7 +45,6 @@ public class MemberTestDataFactory {
         dto.setLastName("Singh");
         dto.setEmail("sahib@gmail.com");
         dto.setPasswordHash("securePassword123");
-        dto.setAccountStatus(AccountStatus.ACTIVE);
         return dto;
     }
 }
