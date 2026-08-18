@@ -90,6 +90,9 @@
 		<repository>
 			<id>github</id>
 			<url>https://maven.pkg.github.com/punjabskillsbank/tarakki-common</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 
