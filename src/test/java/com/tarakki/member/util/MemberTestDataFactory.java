@@ -1,5 +1,6 @@
 package com.tarakki.member.util;
 
+import com.tarakki.member.dto.MemberUpdateDTO;
 import com.tarakki.member.entity.Member;
 import com.tarakki.common.enums.AccountStatus;
 import com.tarakki.common.dto.MemberDTO;
@@ -36,5 +37,14 @@ public class MemberTestDataFactory {
         member.setPasswordHash("encodedPassword123");
         member.setAccountStatus(AccountStatus.ACTIVE);
         return member;
+    }
+
+    public static MemberUpdateDTO createMemberUpdateDTO() {
+        MemberUpdateDTO dto = new MemberUpdateDTO();
+        dto.setFirstName("Sahib");
+        dto.setLastName("Singh");
+        dto.setEmail("sahib@gmail.com");
+        dto.setPasswordHash("securePassword123");
+        return dto;
     }
 }
