@@ -1,6 +1,7 @@
 package com.tarakki.member.dto;
 
 import com.tarakki.common.enums.AccountStatus;
+import com.tarakki.common.enums.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,4 +42,7 @@ public class MemberRequestDTO {
 
     @NotNull
     private AccountStatus accountStatus = AccountStatus.INVITED;
+
+    @NotNull
+    private Role role = Role.VIEWER;
 }

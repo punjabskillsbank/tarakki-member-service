@@ -2,6 +2,7 @@ package com.tarakki.member.entity;
 
 
 import com.tarakki.common.enums.AccountStatus;
+import com.tarakki.common.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -45,6 +46,11 @@ public class Member {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(name = "account_status", columnDefinition = "member_account_status")
     private AccountStatus accountStatus;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "role", columnDefinition = "member_role", nullable = false)
+    private Role role;
 
     @CreationTimestamp
     @Column(name = "created_at")
