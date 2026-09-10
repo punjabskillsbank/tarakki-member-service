@@ -80,7 +80,12 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public MemberDTO updateMemberByMemberId(UUID memberId, MemberUpdateDTO memberUpdateDTO) {
         Member existingMember = memberRepository.findById((memberId)).orElseThrow(() -> new MemberNotFoundException(memberId));
+        String rawPassword = memberUpdateDTO.getPasswordHash();
+        memberUpdateDTO.setPasswordHash(null);
         modelMapper.map(memberUpdateDTO, existingMember);
+        if (rawPassword != null && !rawPassword.isBlank()) {
+            existingMember.setPasswordHash(passwordEncoder.encode(rawPassword));
+        }
         return modelMapper.map(memberRepository.save(existingMember), MemberDTO.class);
     }
 }
