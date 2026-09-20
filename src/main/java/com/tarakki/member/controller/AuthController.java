@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<MemberDTO> getCurrentMember(Authentication authentication) {
-        MemberDTO result = memberService.getMemberByEmail(authentication.getName());
+        MemberDTO result = memberService.getMemberDetailsByMemberId(UUID.fromString(authentication.getName()));
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

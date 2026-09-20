@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -84,10 +85,10 @@ class AuthControllerTest {
     @Test
     void shouldReturnCurrentMemberWhenAuthenticated() throws Exception {
         MemberDTO memberDTO = MemberTestDataFactory.createMemberDTO();
-        when(memberService.getMemberByEmail(memberDTO.getEmail())).thenReturn(memberDTO);
+        when(memberService.getMemberDetailsByMemberId(memberDTO.getMemberId())).thenReturn(memberDTO);
 
         UsernamePasswordAuthenticationToken principal =
-                new UsernamePasswordAuthenticationToken(memberDTO.getEmail(), null, List.of());
+                new UsernamePasswordAuthenticationToken(memberDTO.getMemberId().toString(), null, List.of());
 
         mockMvc.perform(get("/api/auth/me").principal(principal))
                 .andExpect(status().isOk())

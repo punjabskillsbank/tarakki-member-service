@@ -2,11 +2,13 @@ package com.tarakki.member.service;
 
 import com.tarakki.member.entity.Member;
 
+import java.util.UUID;
+
 public interface JwtService {
 
     String generateToken(Member member);
 
-    String extractEmail(String token);
+    UUID extractMemberId(String token);
 
     boolean isTokenValid(String token);
 }

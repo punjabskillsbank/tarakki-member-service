@@ -13,6 +13,7 @@ import java.util.UUID;
 public class MemberTestDataFactory {
     public static MemberDTO createMemberDTO() {
         MemberDTO dto = new MemberDTO();
+        dto.setMemberId(UUID.randomUUID());
         dto.setFirstName("Sahib");
         dto.setLastName("Singh");
         dto.setEmail("sahib@gmail.com");

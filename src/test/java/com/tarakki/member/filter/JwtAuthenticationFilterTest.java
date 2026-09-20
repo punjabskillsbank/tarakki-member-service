@@ -13,6 +13,8 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -40,15 +42,16 @@ class JwtAuthenticationFilterTest {
 
     @Test
     void shouldPopulateSecurityContextWhenTokenIsValid() throws Exception {
+        UUID memberId = UUID.randomUUID();
         request.addHeader("Authorization", "Bearer valid-token");
         when(jwtService.isTokenValid("valid-token")).thenReturn(true);
-        when(jwtService.extractEmail("valid-token")).thenReturn("sahib@gmail.com");
+        when(jwtService.extractMemberId("valid-token")).thenReturn(memberId);
 
         jwtAuthenticationFilter.doFilter(request, response, filterChain);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         assertNotNull(authentication);
-        assertEquals("sahib@gmail.com", authentication.getPrincipal());
+        assertEquals(memberId.toString(), authentication.getPrincipal());
         verify(filterChain).doFilter(request, response);
     }
 
@@ -70,7 +73,7 @@ class JwtAuthenticationFilterTest {
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
         verify(filterChain).doFilter(request, response);
-        verify(jwtService, never()).extractEmail(anyString());
+        verify(jwtService, never()).extractMemberId(anyString());
     }
 
     @Test
