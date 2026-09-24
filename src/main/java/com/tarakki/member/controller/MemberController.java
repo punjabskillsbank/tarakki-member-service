@@ -1,8 +1,10 @@
 package com.tarakki.member.controller;
 
+import com.tarakki.common.audit.annotation.Auditable;
 import com.tarakki.common.dto.MemberDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
 import com.tarakki.member.dto.MemberUpdateDTO;
+import com.tarakki.member.entity.Member;
 import com.tarakki.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,12 +48,14 @@ public class MemberController {
         return ResponseEntity.ok(members);
     }
 
+    @Auditable(eventName = "MEMBER_DELETED" , entityName = "MEMBER" , entityClass = Member.class , entityIdArgSpel = "#memberId")
     @DeleteMapping("/{memberId}")
     public ResponseEntity<String> deleteMember(@PathVariable UUID memberId) {
         memberService.deleteMember(memberId);
         return ResponseEntity.ok("Member deleted successfully with id: " + memberId);
     }
 
+    @Auditable(eventName = "MEMBER_UPDATED" , entityName = "MEMBER" , entityClass = Member.class , entityIdArgSpel = "#memberId")
     @PatchMapping("/{memberId}")
     public ResponseEntity<MemberDTO> updateMemberByMemberId(@PathVariable UUID memberId, @Valid @RequestBody MemberUpdateDTO memberRequestDTO) {
         MemberDTO memberDTO = memberService.updateMemberByMemberId(memberId, memberRequestDTO);
