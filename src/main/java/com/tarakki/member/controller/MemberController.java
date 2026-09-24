@@ -55,6 +55,7 @@ public class MemberController {
         return ResponseEntity.ok("Member deleted successfully with id: " + memberId);
     }
 
+    @Auditable(eventName = "MEMBER_PATCHED" , entityName = "MEMBER" , entityClass = Member.class , entityIdArgSpel = "#memberId")
     @PatchMapping("/{memberId}")
     public ResponseEntity<MemberDTO> updateMemberByMemberId(@PathVariable UUID memberId, @Valid @RequestBody MemberUpdateDTO memberRequestDTO) {
         MemberDTO memberDTO = memberService.updateMemberByMemberId(memberId, memberRequestDTO);
