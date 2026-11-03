@@ -233,10 +233,12 @@ class MemberServiceTest {
         assertEquals(memberRequestDTO.getLastName(), result.getLastName());
         assertEquals(memberRequestDTO.getEmail(), result.getEmail());
         assertEquals(memberRequestDTO.getProfilePhotoS3Key(), result.getProfilePhotoS3Key());
+        assertEquals("encodedPassword123", member.getPasswordHash());
 
         verify(memberRepository, times(1)).findById(memberId);
         verify(modelMapper, times(1)).map(memberRequestDTO, member);
         verify(memberRepository, times(2)).save(member);
+        verifyNoInteractions(passwordEncoder);
 
     }
 }

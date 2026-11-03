@@ -79,8 +79,11 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDTO updateMemberByMemberId(UUID memberId, MemberUpdateDTO memberUpdateDTO) {
-        Member existingMember = memberRepository.findById((memberId)).orElseThrow(() -> new MemberNotFoundException(memberId));
+        Member existingMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
+
         modelMapper.map(memberUpdateDTO, existingMember);
+
         return modelMapper.map(memberRepository.save(existingMember), MemberDTO.class);
     }
 }

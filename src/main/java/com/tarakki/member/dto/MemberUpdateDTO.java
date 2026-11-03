@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -24,9 +23,6 @@ public class MemberUpdateDTO {
     @Email
     @Size(max = 255)
     private String email;
-
-    @Size(max = 255)
-    private String passwordHash;
 
     private String profilePhotoS3Key;
 
