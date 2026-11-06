@@ -7,6 +7,7 @@ import com.tarakki.member.controller.MemberController;
 import com.tarakki.member.dto.LoginRequestDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
 import com.tarakki.member.entity.Member;
+import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.service.JwtService;
 import com.tarakki.member.service.MemberService;
@@ -128,11 +129,6 @@ class SecurityConfigWebMvcTest {
     @Test
     void shouldRejectGetMemberByIdWithoutToken() throws Exception {
         assertRejected(get("/api/members/" + member.getMemberId()));
-    }
-
-    @Test
-    void shouldRejectGetMemberByEmailWithoutToken() throws Exception {
-        assertRejected(get("/api/members/email/" + member.getEmail()));
     }
 
     @Test
@@ -258,6 +254,50 @@ class SecurityConfigWebMvcTest {
                 .andExpect(jsonPath("$.email").value(memberDTO.getEmail()));
 
         verify(memberService).createMember(any(MemberRequestDTO.class));
+    }
+
+    @Test
+    void shouldGetMemberByEmailWithoutToken() throws Exception {
+        when(memberService.getMemberByEmail(member.getEmail())).thenReturn(memberDTO);
+
+        mockMvc.perform(get("/api/members/email/" + member.getEmail()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(memberDTO.getEmail()));
+
+        verify(memberService).getMemberByEmail(member.getEmail());
+    }
+
+    @Test
+    void shouldGetMemberByEmailWithInvalidToken() throws Exception {
+        when(memberService.getMemberByEmail(member.getEmail())).thenReturn(memberDTO);
+
+        mockMvc.perform(get("/api/members/email/" + member.getEmail())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer not-a-jwt"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(memberDTO.getEmail()));
+
+        verify(memberService).getMemberByEmail(member.getEmail());
+    }
+
+    @Test
+    void shouldReturnNotFoundForUnknownEmailWithoutToken() throws Exception {
+        String unknownEmail = "nobody@example.com";
+        when(memberService.getMemberByEmail(unknownEmail)).thenThrow(new MemberNotFoundException(unknownEmail));
+
+        mockMvc.perform(get("/api/members/email/" + unknownEmail))
+                .andExpect(status().isNotFound());
+
+        verify(memberService).getMemberByEmail(unknownEmail);
+    }
+
+    @Test
+    void shouldKeepOtherMemberEmailRoutesProtected() throws Exception {
+        // the public matcher is one GET segment only: no deeper paths, no other verbs
+        assertRejected(get("/api/members/email/" + member.getEmail() + "/extra"));
+        assertRejected(patch("/api/members/email/" + member.getEmail())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"));
+        assertRejected(delete("/api/members/email/" + member.getEmail()));
     }
 
     @Test
