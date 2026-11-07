@@ -2,6 +2,7 @@ package com.tarakki.member.service;
 
 import com.tarakki.common.dto.MemberDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
+import com.tarakki.member.dto.MemberSignupResponseDTO;
 import com.tarakki.member.dto.MemberUpdateDTO;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.UUID;
 
 public interface MemberService {
 
-    MemberDTO createMember(MemberRequestDTO memberRequestDTO);
+    MemberSignupResponseDTO createMember(MemberRequestDTO memberRequestDTO);
 
     boolean existsByEmail(String email);
 

@@ -69,6 +69,11 @@ class JwtServiceTest {
     }
 
     @Test
+    void getExpiresInSeconds_shouldConvertConfiguredMillisecondsToSeconds() {
+        assertEquals(3600L, jwtService.getExpiresInSeconds());
+    }
+
+    @Test
     void isTokenValid_shouldReturnTrueForFreshlyGeneratedToken() {
         String token = jwtService.generateToken(member);
 

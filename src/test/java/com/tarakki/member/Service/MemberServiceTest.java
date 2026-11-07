@@ -5,8 +5,10 @@ import com.tarakki.member.entity.Member;
 import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.common.dto.MemberDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
+import com.tarakki.member.dto.MemberSignupResponseDTO;
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
+import com.tarakki.member.service.JwtService;
 import com.tarakki.member.serviceImpl.MemberServiceImpl;
 import com.tarakki.member.util.MemberTestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,10 +43,14 @@ class MemberServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private JwtService jwtService;
+
     @InjectMocks
     private MemberServiceImpl memberService;
 
     private MemberDTO dto;
+    private MemberSignupResponseDTO signupDto;
     private Member member;
     private UUID memberId;
     private MemberUpdateDTO memberRequestDTO;
@@ -52,7 +58,13 @@ class MemberServiceTest {
     @BeforeEach
     void setUp() {
         dto = MemberTestDataFactory.createMemberDTO();
-        member = MemberTestDataFactory.createMemberEntity();
+        signupDto = new MemberSignupResponseDTO();
+        signupDto.setMemberId(dto.getMemberId());
+        signupDto.setFirstName(dto.getFirstName());
+        signupDto.setLastName(dto.getLastName());
+        signupDto.setEmail(dto.getEmail());
+        signupDto.setAccountStatus(dto.getAccountStatus());
+        member =MemberTestDataFactory.createMemberEntity();
         memberRequestDTO = MemberTestDataFactory.createMemberUpdateDTO();
         memberId = member.getMemberId();
     }
@@ -70,20 +82,81 @@ class MemberServiceTest {
         when(memberRepository.save(any(Member.class)))
                 .thenReturn(member);
 
-        when(modelMapper.map(any(Member.class), eq(MemberDTO.class)))
-                .thenReturn(dto);
+        when(modelMapper.map(any(Member.class), eq(MemberSignupResponseDTO.class)))
+                .thenReturn(signupDto);
 
-        MemberDTO result = memberService.createMember(requestDto);
+        when(jwtService.generateToken(member)).thenReturn("signup-jwt");
+        when(jwtService.getExpiresInSeconds()).thenReturn(3600L);
+
+        MemberSignupResponseDTO result = memberService.createMember(requestDto);
 
         assertNotNull(result);
-        assertEquals(dto.getFirstName(), result.getFirstName());
-        assertEquals(dto.getLastName(), result.getLastName());
-        assertEquals(dto.getEmail(), result.getEmail());
-        assertEquals(dto.getAccountStatus(), result.getAccountStatus());
+        assertEquals(signupDto.getFirstName(), result.getFirstName());
+        assertEquals(signupDto.getLastName(), result.getLastName());
+        assertEquals(signupDto.getEmail(), result.getEmail());
+        assertEquals(signupDto.getAccountStatus(), result.getAccountStatus());
+        assertEquals("signup-jwt", result.getToken());
+        assertEquals("Bearer", result.getTokenType());
+        assertEquals(3600L, result.getExpiresIn());
 
         verify(modelMapper).map(any(MemberRequestDTO.class), eq(Member.class));
+        verify(passwordEncoder).encode(requestDto.getPasswordHash());
         verify(memberRepository).save(any(Member.class));
-        verify(modelMapper).map(any(Member.class), eq(MemberDTO.class));
+        verify(modelMapper).map(any(Member.class), eq(MemberSignupResponseDTO.class));
+        verify(jwtService).generateToken(member);
+        verify(jwtService).getExpiresInSeconds();
+    }
+
+    @Test
+    void shouldIssueTokenForTheSavedMemberAndStoreOnlyTheEncodedPassword() {
+        MemberRequestDTO requestDto = MemberTestDataFactory.createMemberRequestDTO();
+        Member unsavedMember = MemberTestDataFactory.createMemberEntity();
+        unsavedMember.setMemberId(null);
+        Member savedMember = MemberTestDataFactory.createMemberEntity();
+
+        when(modelMapper.map(any(MemberRequestDTO.class), eq(Member.class)))
+                .thenReturn(unsavedMember);
+        when(passwordEncoder.encode(requestDto.getPasswordHash()))
+                .thenReturn("bcrypt-hash");
+        when(memberRepository.save(unsavedMember))
+                .thenReturn(savedMember);
+        when(modelMapper.map(savedMember, MemberSignupResponseDTO.class))
+                .thenReturn(new MemberSignupResponseDTO());
+        when(jwtService.generateToken(savedMember)).thenReturn("signup-jwt");
+        when(jwtService.getExpiresInSeconds()).thenReturn(3600L);
+
+        MemberSignupResponseDTO result = memberService.createMember(requestDto);
+
+        assertEquals("signup-jwt", result.getToken());
+        assertEquals("bcrypt-hash", unsavedMember.getPasswordHash());
+        assertNotEquals(requestDto.getPasswordHash(), unsavedMember.getPasswordHash());
+
+        // the token must carry the database-assigned id of the saved row, never the unsaved copy
+        verify(jwtService).generateToken(savedMember);
+        verify(jwtService, never()).generateToken(unsavedMember);
+        verify(memberRepository).save(unsavedMember);
+    }
+
+    @Test
+    void shouldPropagateFailureWhenTokenCannotBeGenerated() {
+        MemberRequestDTO requestDto = MemberTestDataFactory.createMemberRequestDTO();
+
+        when(modelMapper.map(any(MemberRequestDTO.class), eq(Member.class)))
+                .thenReturn(member);
+        when(passwordEncoder.encode(anyString()))
+                .thenReturn(member.getPasswordHash());
+        when(memberRepository.save(any(Member.class)))
+                .thenReturn(member);
+        when(modelMapper.map(any(Member.class), eq(MemberSignupResponseDTO.class)))
+                .thenReturn(signupDto);
+        when(jwtService.generateToken(member))
+                .thenThrow(new IllegalStateException("signing failure"));
+
+        assertThrows(IllegalStateException.class, () -> memberService.createMember(requestDto));
+
+        verify(memberRepository).save(any(Member.class));
+        verify(jwtService).generateToken(member);
+        verify(jwtService, never()).getExpiresInSeconds();
     }
 
     @Test
@@ -103,6 +176,8 @@ class MemberServiceTest {
 
         verify(memberRepository).save(any(Member.class));
         verify(memberRepository).existsByEmail(anyString());
+        verify(modelMapper, never()).map(any(Member.class), eq(MemberSignupResponseDTO.class));
+        verifyNoInteractions(jwtService);
     }
 
     @Test
@@ -124,6 +199,7 @@ class MemberServiceTest {
 
         verify(memberRepository).save(any(Member.class));
         verify(memberRepository).existsByEmail(anyString());
+        verifyNoInteractions(jwtService);
     }
 
     @Test

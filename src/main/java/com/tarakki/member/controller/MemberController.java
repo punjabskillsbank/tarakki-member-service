@@ -3,6 +3,7 @@ package com.tarakki.member.controller;
 import com.tarakki.common.audit.annotation.Auditable;
 import com.tarakki.common.dto.MemberDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
+import com.tarakki.member.dto.MemberSignupResponseDTO;
 import com.tarakki.member.dto.MemberUpdateDTO;
 import com.tarakki.member.entity.Member;
 import com.tarakki.member.service.MemberService;
@@ -25,8 +26,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping
-    public ResponseEntity<MemberDTO> createMember(@Valid @RequestBody MemberRequestDTO memberRequestDTO) {
-        MemberDTO result = memberService.createMember(memberRequestDTO);
+    public ResponseEntity<MemberSignupResponseDTO> createMember(@Valid @RequestBody MemberRequestDTO memberRequestDTO) {
+        MemberSignupResponseDTO result = memberService.createMember(memberRequestDTO);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
