@@ -47,6 +47,11 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
+    public long getExpiresInSeconds() {
+        return expirationMs / 1000;
+    }
+
+    @Override
     public UUID extractMemberId(String token) {
         return UUID.fromString(parseClaims(token).getSubject());
     }

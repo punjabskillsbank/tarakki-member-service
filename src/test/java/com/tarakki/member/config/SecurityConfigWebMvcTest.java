@@ -6,6 +6,7 @@ import com.tarakki.member.controller.AuthController;
 import com.tarakki.member.controller.MemberController;
 import com.tarakki.member.dto.LoginRequestDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
+import com.tarakki.member.dto.MemberSignupResponseDTO;
 import com.tarakki.member.entity.Member;
 import com.tarakki.member.repository.MemberRepository;
 import com.tarakki.member.service.JwtService;
@@ -249,13 +250,17 @@ class SecurityConfigWebMvcTest {
     @Test
     void shouldSignUpWithoutToken() throws Exception {
         MemberRequestDTO request = MemberTestDataFactory.createMemberRequestDTO();
-        when(memberService.createMember(any(MemberRequestDTO.class))).thenReturn(memberDTO);
+        MemberSignupResponseDTO signupResponse = MemberTestDataFactory.createMemberSignupResponseDTO();
+        signupResponse.setMemberId(member.getMemberId());
+        signupResponse.setToken(jwtService.generateToken(member));
+        when(memberService.createMember(any(MemberRequestDTO.class))).thenReturn(signupResponse);
 
         mockMvc.perform(post("/api/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.email").value(memberDTO.getEmail()));
+                .andExpect(jsonPath("$.email").value(memberDTO.getEmail()))
+                .andExpect(jsonPath("$.token").isNotEmpty());
 
         verify(memberService).createMember(any(MemberRequestDTO.class));
     }

@@ -11,4 +11,6 @@ public interface JwtService {
     UUID extractMemberId(String token);
 
     boolean isTokenValid(String token);
+
+    long getExpiresInSeconds();
 }

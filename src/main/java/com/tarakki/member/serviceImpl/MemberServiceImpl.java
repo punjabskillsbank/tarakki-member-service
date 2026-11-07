@@ -6,8 +6,10 @@ import com.tarakki.member.exception.MemberNotFoundException;
 import com.tarakki.common.dto.MemberDTO;
 
 import com.tarakki.member.dto.MemberRequestDTO;
+import com.tarakki.member.dto.MemberSignupResponseDTO;
 import com.tarakki.member.exception.MemberEmailAlreadyExistsException;
 import com.tarakki.member.repository.MemberRepository;
+import com.tarakki.member.service.JwtService;
 import com.tarakki.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,14 +27,19 @@ public class MemberServiceImpl implements MemberService {
     private final ModelMapper modelMapper;
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     @Override
-    public MemberDTO createMember(MemberRequestDTO memberRequestDTO) {
+    public MemberSignupResponseDTO createMember(MemberRequestDTO memberRequestDTO) {
         try {
             Member member = modelMapper.map(memberRequestDTO, Member.class);
             member.setPasswordHash(passwordEncoder.encode(memberRequestDTO.getPasswordHash()));
             Member savedMember = memberRepository.save(member);
-            return modelMapper.map(savedMember, MemberDTO.class);
+            MemberSignupResponseDTO response = modelMapper.map(savedMember, MemberSignupResponseDTO.class);
+            response.setToken(jwtService.generateToken(savedMember));
+            response.setTokenType("Bearer");
+            response.setExpiresIn(jwtService.getExpiresInSeconds());
+            return response;
         } catch (DuplicateKeyException e) {
             if (existsByEmail(memberRequestDTO.getEmail())) {
                 throw new MemberEmailAlreadyExistsException(memberRequestDTO.getEmail());
