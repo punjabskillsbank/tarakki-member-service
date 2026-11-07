@@ -7,6 +7,7 @@ import com.tarakki.member.entity.Member;
 import com.tarakki.common.enums.AccountStatus;
 import com.tarakki.common.dto.MemberDTO;
 import com.tarakki.member.dto.MemberRequestDTO;
+import com.tarakki.member.dto.MemberSignupResponseDTO;
 
 import java.util.UUID;
 
@@ -18,6 +19,19 @@ public class MemberTestDataFactory {
         dto.setLastName("Singh");
         dto.setEmail("sahib@gmail.com");
         dto.setAccountStatus(AccountStatus.ACTIVE);
+        return dto;
+    }
+
+    public static MemberSignupResponseDTO createMemberSignupResponseDTO() {
+        MemberSignupResponseDTO dto = new MemberSignupResponseDTO();
+        dto.setMemberId(UUID.randomUUID());
+        dto.setFirstName("Sahib");
+        dto.setLastName("Singh");
+        dto.setEmail("sahib@gmail.com");
+        dto.setAccountStatus(AccountStatus.ACTIVE);
+        dto.setToken("mock-signup-jwt");
+        dto.setTokenType("Bearer");
+        dto.setExpiresIn(3600L);
         return dto;
     }
 
