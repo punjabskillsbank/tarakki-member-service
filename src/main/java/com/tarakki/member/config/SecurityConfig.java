@@ -36,6 +36,9 @@ public class SecurityConfig {
     // Must work before the user has a token: log in, and sign up.
     private static final String[] PUBLIC_POST_ENDPOINTS = {"/api/auth/login", "/api/members"};
 
+    // Signup needs to know whether an email is already registered before the user has a token.
+    private static final String[] PUBLIC_GET_ENDPOINTS = {"/api/members/email/*"};
+
     private final JwtService jwtService;
 
     @Value("${cors.allowed-origins:}")
@@ -52,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .requestMatchers(SWAGGER_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
+                        .requestMatchers(HttpMethod.GET, PUBLIC_GET_ENDPOINTS).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> {
                     response.setContentType(MediaType.TEXT_PLAIN_VALUE);
